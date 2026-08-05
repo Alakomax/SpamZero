@@ -12,8 +12,8 @@ android {
         applicationId = "com.antigravity.spamquarantine"
         minSdk = 29
         targetSdk = 34
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = 5
+        versionName = "1.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -21,9 +21,22 @@ android {
         }
     }
 
+    signingConfigs {
+        create("customSigning") {
+            storeFile = file("app.keystore")
+            storePassword = "android"
+            keyAlias = "spamkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("customSigning")
+        }
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("customSigning")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
