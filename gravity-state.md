@@ -1,11 +1,11 @@
 ## [ESTADO ACTUAL] Última actualización: 2026-08-11 | Dominio: dev/SpamQuarantine
-- Objetivo Activo: Desarrollo del módulo de SMS Spam y el exportador probatorio de historial de cuarentena (TXT/CSV/Reporte).
-- Última Acción: Análisis de utilidad legal en Chile (SERNAC, Juzgados de Policía Local, PDI). Creación de especificación técnica del exportador de evidencia.
-- Decisiones/Bloqueos: Esperando inicio de desarrollo del paquete completo de SMS y Exportación.
-- Siguiente Paso: Iniciar la modificación de Entities.kt, AppDatabase.kt, SmsSpamReceiver.kt, QuarantineExporter.kt y la actualización de QuarantineScreen.kt.
+- Objetivo Activo: Publicación exitosa de v1.0.8 con módulo de SMS Spam y exportador probatorio auditado.
+- Última Acción: Creación de SmsSpamReceiver.kt, QuarantineExporter.kt, Room DB v2, actualización de QuarantineScreen.kt, HomeScreen.kt y PhoneUtils.kt. Push a GitHub (`0df8065`, tag `v1.0.8`).
+- Decisiones/Bloqueos: Ninguno. Release v1.0.8 listo y disponible.
+- Siguiente Paso: Instalar v1.0.8 o realizar pruebas de interceptación SMS.
 
 ## Historial Reciente
-- 2026-08-11: Solicitud de exportador probatorio en TXT/PDF para denuncias de acoso. Diseño del módulo QuarantineExporter.kt.
-- 2026-08-11: Solicitud de incorporación de bloqueo de SMS Spam. Análisis de requerimientos y creación del plan de implementación.
+- 2026-08-11: Desarrollo de módulo de SMS Spam, exportador probatorio (.txt) y actualización de vistas en Compose. Release v1.0.8 publicado en GitHub.
 - 2026-08-11: Creación de la suite legal completa (PRIVACY_POLICY, TERMS, LICENSE, NOTICE, SECURITY) y visor interactivo LegalScreen.kt en la app. Release v1.0.7 publicado en GitHub.
+- 2026-08-11: Creación de ícono personalizado oficial en res/mipmap y vinculación en AndroidManifest.xml. Release v1.0.6 publicado en GitHub.
 - 2026-08-11: Lectura de README.md e inicialización de memoria del proyecto.
