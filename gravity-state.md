@@ -1,12 +1,12 @@
 ## [ESTADO ACTUAL] Última actualización: 2026-08-11 | Dominio: dev/SpamQuarantine
-- Objetivo Activo: Asesoría de estrategia de difusión en RRSS y guía de publicación en Google Play Store.
-- Última Acción: Publicación exitosa de v1.0.5 en GitHub. Preparación de plan de RRSS y requisitos de tienda.
-- Decisiones/Bloqueos: Ninguno.
-- Siguiente Paso: Entregar copia promocional para RRSS y guía paso a paso para Google Play Console.
+- Objetivo Activo: Desarrollo de documentos legales (PRIVACY_POLICY.md, TERMS_OF_SERVICE.md) e integración de pantalla Legal en la app.
+- Última Acción: Descarte de Google Play Console por costos y creación del plan de implementación para módulo legal interno.
+- Decisiones/Bloqueos: Esperando confirmación del usuario para redactar archivos legales y crear LegalScreen.kt en Compose.
+- Siguiente Paso: Recibir aprobación del usuario y crear PRIVACY_POLICY.md, TERMS_OF_SERVICE.md, LegalScreen.kt y actualizar MainActivity.kt.
 
 ## Historial Reciente
-- 2026-08-11: Publicación de v1.0.5 en GitHub.
-- 2026-08-11: Corrección de contraste en Modo Oscuro en QuarantineScreen.kt, HomeScreen.kt y RulesScreen.kt.
-- 2026-08-11: Corrección de layout en HomeScreen.kt usando IntrinsicSize.Max y fillMaxHeight().
-- 2026-08-11: Implementación de ProtectionPreferences.kt y Switch ON/OFF en HomeScreen.kt.
+- 2026-08-11: Descarte de Play Console por costos. Creación de plan de implementación para documentos legales y pantalla in-app.
+- 2026-08-11: Aprobación del ícono Opción 1 (Escudo 3D Metálico). Asesoría sobre marco legal de uso de IA en apps.
+- 2026-08-11: Creación de ícono personalizado oficial en res/mipmap y vinculación en AndroidManifest.xml. Release v1.0.6 publicado en GitHub.
+- 2026-08-11: Incremento de versión a v1.0.5 (versionCode 6). Commit y tag v1.0.5 subidos a GitHub.
 - 2026-08-11: Lectura de README.md e inicialización de memoria del proyecto.

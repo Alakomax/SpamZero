@@ -13,17 +13,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import com.antigravity.spamquarantine.ui.HomeScreen
+import com.antigravity.spamquarantine.ui.LegalScreen
 import com.antigravity.spamquarantine.ui.QuarantineScreen
 import com.antigravity.spamquarantine.ui.RulesScreen
 import com.antigravity.spamquarantine.ui.theme.SpamQuarantineTheme
@@ -97,6 +99,12 @@ fun MainAppStructure(
                     )
                 },
                 actions = {
+                    IconButton(onClick = { selectedTab = 3 }) {
+                        Icon(
+                            imageVector = Icons.Default.Gavel,
+                            contentDescription = "Información Legal"
+                        )
+                    }
                     IconButton(onClick = onToggleDarkMode) {
                         Icon(
                             imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
@@ -127,8 +135,14 @@ fun MainAppStructure(
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { selectedTab = 2 },
-                    icon = { Icon(Icons.Default.List, contentDescription = "Reglas") },
+                    icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Reglas") },
                     label = { Text("Reglas") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 3,
+                    onClick = { selectedTab = 3 },
+                    icon = { Icon(Icons.Default.Gavel, contentDescription = "Legal") },
+                    label = { Text("Legal") }
                 )
             }
         }
@@ -138,6 +152,7 @@ fun MainAppStructure(
                 0 -> HomeScreen(onRequestRole = onRequestRole)
                 1 -> QuarantineScreen()
                 2 -> RulesScreen()
+                3 -> LegalScreen()
             }
         }
     }
