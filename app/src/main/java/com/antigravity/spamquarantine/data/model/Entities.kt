@@ -23,3 +23,13 @@ data class QuarantineLogEntity(
     val timestamp: Long = System.currentTimeMillis(),
     val isReviewed: Boolean = false
 )
+
+@Entity(tableName = "sms_quarantine_logs")
+data class SmsQuarantineLogEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val senderPhoneNumber: String,
+    val messageBody: String,
+    val matchedPattern: String,
+    val timestamp: Long = System.currentTimeMillis()
+)

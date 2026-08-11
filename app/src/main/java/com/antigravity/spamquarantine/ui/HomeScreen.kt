@@ -61,7 +61,7 @@ fun HomeScreen(onRequestRole: () -> Unit) {
     LaunchedEffect(Unit) {
         scope.launch {
             val db = AppDatabase.getDatabase(context)
-            blockedCount = db.quarantineDao().getBlockedCount()
+            blockedCount = db.quarantineDao().getBlockedCount() + db.smsQuarantineDao().getSmsBlockedCount()
             rulesCount = db.ruleDao().getRuleCount()
             isRoleGranted = checkRoleGranted(context)
             isProtectionEnabled = ProtectionPreferences.isProtectionEnabled(context)

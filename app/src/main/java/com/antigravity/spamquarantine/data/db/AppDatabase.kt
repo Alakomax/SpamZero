@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.*
 import com.antigravity.spamquarantine.data.model.QuarantineLogEntity
 import com.antigravity.spamquarantine.data.model.RuleEntity
-import com.antigravity.spamquarantine.util.PhoneUtils
+import com.antigravity.spamquarantine.data.model.SmsQuarantineLogEntity
 
 @Dao
 interface RuleDao {
@@ -42,10 +42,33 @@ interface QuarantineDao {
     suspend fun getBlockedCount(): Int
 }
 
-@Database(entities = [RuleEntity::class, QuarantineLogEntity::class], version = 1, exportSchema = false)
+@Dao
+interface SmsQuarantineDao {
+    @Query("SELECT * FROM sms_quarantine_logs ORDER BY timestamp DESC")
+    suspend fun getAllSmsLogs(): List<SmsQuarantineLogEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSmsLog(log: SmsQuarantineLogEntity): Long
+
+    @Delete
+    suspend fun deleteSmsLog(log: SmsQuarantineLogEntity)
+
+    @Query("DELETE FROM sms_quarantine_logs")
+    suspend fun clearAllSms()
+
+    @Query("SELECT COUNT(*) FROM sms_quarantine_logs")
+    suspend fun getSmsBlockedCount(): Int
+}
+
+@Database(
+    entities = [RuleEntity::class, QuarantineLogEntity::class, SmsQuarantineLogEntity::class],
+    version = 2,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun ruleDao(): RuleDao
     abstract fun quarantineDao(): QuarantineDao
+    abstract fun smsQuarantineDao(): SmsQuarantineDao
 
     companion object {
         @Volatile
