@@ -4,7 +4,7 @@ Haz clic en **`app-debug.apk`** para descargar e instalar la aplicación directa
 
 #### 🚀 Novedades y Características Principales:
 
-* 🎨 **Ícono Adaptativo Nativo Android (Adaptive Icon):** Integración del estándar de dos capas (fondo oscuro `#0F172A` + símbolo flotante transparente) para eliminar el borde blanco y encajar a borde completo en cualquier lanzador de celular (Pixel, Samsung, Xiaomi, Motorola).
+* 🎨 **Ícono Oficial Definitivo:** Implementación y almacenamiento en el repositorio (`logo/official_logo.png`) del ícono oficial del escudo 3D metálico con fondo de tono slate adaptativo `#1E232A` para perfecto encuadre en el celular.
 * ⚡ **Interceptación previo a timbre (0 repiques):** Bloquea llamadas spam en milisegundos sin encender la pantalla utilizando `CallScreeningService`.
 * 💬 **Bloqueador de SMS Spam y Estafas:** Interceptación en segundo plano de mensajes SMS no deseados (casinos internacionales `+34 931...`, *Joker Jewels*, *Fortune Rabbit*, y estafas locales `44...`, *TAG*, *Copec*, *abonos falsos*).
 * 📄 **Exportador Probatorio Auditado (.txt):** Genera e imprime informes con timestamps y evidencia estructurada para denuncias ante la **SERNAC**, **Juzgados de Policía Local** o **PDI**.
