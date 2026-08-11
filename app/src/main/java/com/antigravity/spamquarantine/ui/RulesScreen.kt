@@ -60,7 +60,7 @@ fun RulesScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Reglas de Patrones", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text("Reglas de Patrones", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
             IconButton(onClick = { showDialog = true }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar Regla", tint = MaterialTheme.colorScheme.primary)
             }
@@ -103,7 +103,7 @@ fun RulesScreen() {
                     Text(
                         text = "Ejemplo Regex para Chile:\n• Prefijo 600/800: ^\\+56(600|800)\\d+\n• Rango Móvil: ^\\+5692882\\d{4}$",
                         fontSize = 11.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             },
@@ -147,11 +147,12 @@ fun RuleItem(rule: RuleEntity, onDelete: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = rule.description, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                Text(text = rule.pattern, fontSize = 13.sp, color = MaterialTheme.colorScheme.primary)
+                Text(text = rule.description, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(text = rule.pattern, fontSize = 13.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
             }
             IconButton(onClick = onDelete) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Gray)
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
             }
         }
     }

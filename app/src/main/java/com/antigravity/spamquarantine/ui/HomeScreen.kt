@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.antigravity.spamquarantine.data.db.AppDatabase
+import com.antigravity.spamquarantine.util.ProtectionPreferences
 import com.antigravity.spamquarantine.util.UpdateInfo
 import com.antigravity.spamquarantine.util.UpdateManager
 import kotlinx.coroutines.launch
@@ -32,6 +33,7 @@ fun HomeScreen(onRequestRole: () -> Unit) {
     var blockedCount by remember { mutableStateOf(0) }
     var rulesCount by remember { mutableStateOf(0) }
     var isRoleGranted by remember { mutableStateOf(checkRoleGranted(context)) }
+    var isProtectionEnabled by remember { mutableStateOf(ProtectionPreferences.isProtectionEnabled(context)) }
 
     val currentVersion = remember {
         try {
@@ -62,6 +64,7 @@ fun HomeScreen(onRequestRole: () -> Unit) {
             blockedCount = db.quarantineDao().getBlockedCount()
             rulesCount = db.ruleDao().getRuleCount()
             isRoleGranted = checkRoleGranted(context)
+            isProtectionEnabled = ProtectionPreferences.isProtectionEnabled(context)
         }
         checkUpdates()
     }
@@ -74,11 +77,15 @@ fun HomeScreen(onRequestRole: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Tarjeta de Estado del Filtro
+        val cardColor = when {
+            !isRoleGranted -> Color(0xFF991B1B) // Rojo: Sin permiso
+            isProtectionEnabled -> Color(0xFF1E3A8A) // Azul: Protección activa
+            else -> Color(0xFFB45309) // Naranja: Pausada/Desactivada
+        }
+
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = if (isRoleGranted) Color(0xFF1E3A8A) else Color(0xFF991B1B)
-            ),
+            colors = CardDefaults.cardColors(containerColor = cardColor),
             shape = RoundedCornerShape(16.dp)
         ) {
             Row(
@@ -90,27 +97,59 @@ fun HomeScreen(onRequestRole: () -> Unit) {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if (isRoleGranted) "Protección Activa" else "Protección Inactiva",
+                        text = when {
+                            !isRoleGranted -> "Permiso Inactivo"
+                            isProtectionEnabled -> "Protección Activa"
+                            else -> "Protección Pausada"
+                        },
                         color = Color.White,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = if (isRoleGranted)
-                            "El filtro previo a timbre está interceptando números spam en 0 repiques."
-                        else
-                            "Debes otorgar el rol de Filtro de llamadas para bloquear automáticamente.",
+                        text = when {
+                            !isRoleGranted -> "Debes otorgar el rol de Filtro de llamadas para bloquear automáticamente."
+                            isProtectionEnabled -> "El filtro previo a timbre está interceptando números spam en 0 repiques."
+                            else -> "El filtro automático está desactivado. Las llamadas entrantes ingresarán normalmente."
+                        },
                         color = Color(0xFFE2E8F0),
                         fontSize = 14.sp
                     )
                 }
-                Icon(
-                    imageVector = if (isRoleGranted) Icons.Default.CheckCircle else Icons.Default.Shield,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(48.dp)
-                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                if (isRoleGranted) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Switch(
+                            checked = isProtectionEnabled,
+                            onCheckedChange = { enabled ->
+                                isProtectionEnabled = enabled
+                                ProtectionPreferences.setProtectionEnabled(context, enabled)
+                            },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = Color.White,
+                                checkedTrackColor = Color(0xFF10B981),
+                                uncheckedThumbColor = Color.White,
+                                uncheckedTrackColor = Color(0xFF4B5563)
+                            )
+                        )
+                        Text(
+                            text = if (isProtectionEnabled) "ON" else "OFF",
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Shield,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
         }
 
@@ -205,18 +244,18 @@ fun HomeScreen(onRequestRole: () -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column {
-                        Text("Versión de la app: v$currentVersion", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        Text("Versión de la app: v$currentVersion", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
                         Text(
                             text = if (isCheckingUpdate) "Verificando en GitHub..." else "La app está actualizada.",
                             fontSize = 12.sp,
-                            color = Color.Gray
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     IconButton(
                         onClick = { checkUpdates() },
                         enabled = !isCheckingUpdate
                     ) {
-                        Icon(imageVector = Icons.Default.Refresh, contentDescription = "Buscar actualizaciones")
+                        Icon(imageVector = Icons.Default.Refresh, contentDescription = "Buscar actualizaciones", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -224,7 +263,9 @@ fun HomeScreen(onRequestRole: () -> Unit) {
 
         // Métricas rápidas
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Max),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             MetricCard(
@@ -246,18 +287,29 @@ fun HomeScreen(onRequestRole: () -> Unit) {
 @Composable
 fun MetricCard(title: String, value: String, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier,
+        modifier = modifier.fillMaxHeight(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.Start
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            Column {
+                Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = value, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = value, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            Text(text = title, fontSize = 12.sp, color = Color.Gray)
+            Text(
+                text = title,
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = 16.sp
+            )
         }
     }
 }

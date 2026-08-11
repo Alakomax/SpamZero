@@ -11,6 +11,7 @@ import com.antigravity.spamquarantine.data.db.AppDatabase
 import com.antigravity.spamquarantine.data.model.QuarantineLogEntity
 import com.antigravity.spamquarantine.data.model.RuleEntity
 import com.antigravity.spamquarantine.util.PhoneUtils
+import com.antigravity.spamquarantine.util.ProtectionPreferences
 import com.antigravity.spamquarantine.util.SpamRuleCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,13 @@ class SpamCallScreeningService : CallScreeningService() {
         val rawNumber: String = rawHandle?.schemeSpecificPart ?: ""
 
         if (rawNumber.isBlank()) {
+            respondToCall(callDetails, CallResponse.Builder().build())
+            return
+        }
+
+        // Verificar si la protección está pausada/desactivada por el usuario
+        if (!ProtectionPreferences.isProtectionEnabled(applicationContext)) {
+            Log.d("SpamScreening", "Protección deshabilitada por el usuario. Llamada permitida: $rawNumber")
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
