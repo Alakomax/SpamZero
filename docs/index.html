@@ -563,12 +563,21 @@
         }
 
         @media (max-width: 768px) {
-            .desktop-only {
-                display: none !important;
-            }
-
             header {
                 padding: 12px 0;
+            }
+
+            .brand {
+                gap: 10px !important;
+            }
+
+            .brand-logo {
+                width: 36px !important;
+                height: 36px !important;
+            }
+
+            .brand-title {
+                font-size: 18px !important;
             }
 
             .mobile-menu-toggle {
@@ -578,8 +587,8 @@
                 background: rgba(255, 255, 255, 0.08);
                 border: 1px solid var(--border-card);
                 color: var(--text-title);
-                width: 42px;
-                height: 42px;
+                width: 40px;
+                height: 40px;
                 border-radius: 10px;
                 font-size: 18px;
                 cursor: pointer;
@@ -654,7 +663,7 @@
         <div class="container-nav" style="display: flex; align-items: center; justify-content: space-between; width: 100%; position: relative;">
             <a href="#" class="brand">
                 <img src="logo_transparent.png?v=1.0.13" alt="SpamQuarantine Logo" class="brand-logo">
-                <span class="brand-title desktop-only">SpamQuarantine</span>
+                <span class="brand-title">SpamQuarantine</span>
             </a>
 
             <button class="mobile-menu-toggle" id="menuToggle" aria-label="Abrir menú de navegación">
