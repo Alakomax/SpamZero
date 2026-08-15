@@ -631,59 +631,140 @@
             padding: 2px 8px;
             border-radius: 6px;
             font-weight: 600;
+        }        /* Section 5: Minimalist Orbital Features Section (User Image Ref 2) */
+        .features-section-orbital {
+            padding: 60px 0 70px;
+            margin: 30px 0;
+            text-align: center;
         }
 
-        /* Features Grid */
-        .features-section {
-            margin: 70px 0;
+        .features-header-orbital {
+            max-width: 680px;
+            margin: 0 auto 46px;
         }
 
-        .features-grid {
+        .features-header-orbital h2 {
+            font-size: 36px;
+            font-weight: 900;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            letter-spacing: -0.8px;
+        }
+
+        .features-header-orbital p {
+            font-size: 16px;
+            color: var(--text-body);
+        }
+
+        .orbital-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 24px;
         }
 
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 20px;
-            padding: 32px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+        .orbital-card {
+            position: relative;
+            background: rgba(15, 23, 42, 0.75);
+            border-radius: 24px;
+            padding: 36px 20px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-        }
-
-        .card-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
+        .orbital-icon-circle {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 28px;
+            margin-bottom: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .icon-gold { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); }
-        .icon-blue { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
-        .icon-green { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-        .icon-red { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        /* Arc Border Ring Effect (User Image Reference 2) */
+        .orbital-icon-circle::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            padding: 3px;
+            background: conic-gradient(from 0deg, var(--accent-gold) 0%, transparent 65%, var(--accent-gold) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
 
-        .card h3 {
-            font-size: 20px;
+        .orbital-card.gold .orbital-icon-circle { color: #F59E0B; }
+        .orbital-card.gold .orbital-icon-circle::before { background: conic-gradient(from 0deg, #F59E0B 0%, transparent 65%, #F59E0B 100%); }
+
+        .orbital-card.blue .orbital-icon-circle { color: #3B82F6; }
+        .orbital-card.blue .orbital-icon-circle::before { background: conic-gradient(from 0deg, #3B82F6 0%, transparent 65%, #3B82F6 100%); }
+
+        .orbital-card.green .orbital-icon-circle { color: #10B981; }
+        .orbital-card.green .orbital-icon-circle::before { background: conic-gradient(from 0deg, #10B981 0%, transparent 65%, #10B981 100%); }
+
+        .orbital-card.purple .orbital-icon-circle { color: #8B5CF6; }
+        .orbital-card.purple .orbital-icon-circle::before { background: conic-gradient(from 0deg, #8B5CF6 0%, transparent 65%, #8B5CF6 100%); }
+
+        .orbital-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .orbital-card:hover .orbital-icon-circle::before {
+            transform: rotate(180deg);
+        }
+
+        .orbital-title {
+            font-size: 19px;
             font-weight: 800;
-            margin-bottom: 10px;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
         }
 
-        .card p {
-            font-size: 15px;
+        .orbital-desc {
+            font-size: 13.5px;
             color: var(--text-body);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 992px) {
+            .orbital-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 16px !important;
+            }
+            .orbital-card {
+                padding: 24px 16px !important;
+                border-radius: 20px !important;
+            }
+            .orbital-title {
+                font-size: 17px !important;
+            }
+            .orbital-desc {
+                font-size: 12.5px !important;
+            }
+            .orbital-icon-circle {
+                width: 64px !important;
+                height: 64px !important;
+                font-size: 22px !important;
+                margin-bottom: 16px !important;
+            }
         }
 
         /* Installation Guide */
@@ -1080,31 +1161,44 @@
     <!-- Content Sections in Wide Container -->
     <main class="container-wide">
 
-        <!-- Features Grid -->
-        <section class="features-section" id="features">
-            <div class="features-grid">
-                <div class="card">
-                    <div class="card-icon icon-gold"><i class="fa-solid fa-phone-slash"></i></div>
-                    <h3>Filtro Previo a Timbre</h3>
-                    <p>Bloquea llamadas no deseadas antes del primer timbre mediante el servicio nativo de Android. Tu pantalla no se encenderá ni te interrumpirá.</p>
+        <!-- Section 5: Minimalist Orbital Features Section (User Image Ref 2) -->
+        <section class="features-section-orbital" id="features">
+            <div class="features-header-orbital">
+                <h2>Tecnología de Protección Nativa</h2>
+                <p>Herramientas diseñadas específicamente para cortar el spam telefónico y aislar estafas en Chile.</p>
+            </div>
+
+            <div class="orbital-grid">
+                <div class="orbital-card gold">
+                    <div class="orbital-icon-circle">
+                        <i class="fa-solid fa-phone-slash"></i>
+                    </div>
+                    <div class="orbital-title">Corte Previo a Timbre</div>
+                    <div class="orbital-desc">Bloquea números no deseados a 0 repiques mediante el servicio nativo de Android sin encender tu pantalla.</div>
                 </div>
 
-                <div class="card">
-                    <div class="card-icon icon-blue"><i class="fa-solid fa-comment-slash"></i></div>
-                    <h3>Protección SMS Spam</h3>
-                    <p>Detecta y aisla SMS fraudulentos de cobros falsos de TAG, vales Copec, bancos y promociones engañosas de casinos internacionales.</p>
+                <div class="orbital-card blue">
+                    <div class="orbital-icon-circle">
+                        <i class="fa-solid fa-comment-slash"></i>
+                    </div>
+                    <div class="orbital-title">Filtro Inteligente SMS</div>
+                    <div class="orbital-desc">Detecta y aisla automáticamente SMS fraudulentos de cobros falsos de TAG, vales Copec y apuestas.</div>
                 </div>
 
-                <div class="card">
-                    <div class="card-icon icon-green"><i class="fa-solid fa-file-invoice"></i></div>
-                    <h3>Exportador Probatorio (.txt)</h3>
-                    <p>Genera informes formales con evidencia estructurada y timestamps para realizar denuncias efectivas ante el SERNAC, PDI o Juzgados de Policía Local.</p>
+                <div class="orbital-card green">
+                    <div class="orbital-icon-circle">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    <div class="orbital-title">Informe SERNAC (.txt)</div>
+                    <div class="orbital-desc">Genera informes probatorios estructurados con timestamps auditables para denuncias ante SERNAC o PDI.</div>
                 </div>
 
-                <div class="card">
-                    <div class="card-icon icon-red"><i class="fa-solid fa-user-lock"></i></div>
-                    <h3>0 Servidores y 0 Anuncios</h3>
-                    <p>Tu agenda telefónica e historial se quedan 100% en tu celular. No vendemos datos, no tenemos servidores externos ni publicidad molesta.</p>
+                <div class="orbital-card purple">
+                    <div class="orbital-icon-circle">
+                        <i class="fa-solid fa-user-lock"></i>
+                    </div>
+                    <div class="orbital-title">0 Servidores y 0 Anuncios</div>
+                    <div class="orbital-desc">Tu agenda e historial permanecen 100% en tu celular. Sin telemetría, sin servidores en la nube ni publicidad.</div>
                 </div>
             </div>
         </section>
