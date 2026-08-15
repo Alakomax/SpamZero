@@ -767,32 +767,36 @@
             }
         }
 
-        /* Section 6: Connected Installation Process Stepper */
-        .installation-section-stepper {
-            padding: 60px 0 70px;
-            margin: 30px 0;
+        /* Section 6: Light Contrast Installation Process Stepper (Full-Bleed) */
+        .installation-section-light {
+            background: #F8FAFC;
+            color: #0F172A;
+            padding: 80px 0 90px;
+            margin: 60px 0 40px;
+            width: 100%;
         }
 
-        .installation-header-stepper {
+        .installation-header-light {
             text-align: center;
-            max-width: 680px;
-            margin: 0 auto 46px;
+            max-width: 720px;
+            margin: 0 auto 50px;
         }
 
-        .installation-header-stepper h2 {
-            font-size: 36px;
+        .installation-header-light h2 {
+            font-size: 38px;
             font-weight: 900;
-            color: #FFFFFF;
+            color: #0F172A;
             margin-bottom: 12px;
-            letter-spacing: -0.8px;
+            letter-spacing: -1px;
         }
 
-        .installation-header-stepper p {
-            font-size: 16px;
-            color: var(--text-body);
+        .installation-header-light p {
+            font-size: 17px;
+            color: #475569;
+            line-height: 1.5;
         }
 
-        .stepper-container-desktop {
+        .stepper-container-desktop-light {
             position: relative;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -800,88 +804,98 @@
         }
 
         /* Connecting Progress Line behind numbers */
-        .stepper-container-desktop::before {
+        .stepper-container-desktop-light::before {
             content: '';
             position: absolute;
             top: 52px;
             left: 12%;
             right: 12%;
             height: 3px;
-            background: linear-gradient(90deg, #10B981 0%, #3B82F6 50%, #24B3A8 100%);
+            background: linear-gradient(90deg, #2563EB 0%, #059669 50%, #0D9488 100%);
             z-index: 0;
-            opacity: 0.6;
+            opacity: 0.45;
         }
 
-        .step-node-item {
+        .step-node-item-light {
             position: relative;
             z-index: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
             border-radius: 24px;
             padding: 32px 18px 26px;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .step-node-item:hover {
+        .step-node-item-light:hover {
             transform: translateY(-6px);
-            border-color: rgba(36, 179, 168, 0.35);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.55);
+            border-color: #2563EB;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
         }
 
-        .step-badge-num {
+        .step-badge-num-light {
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #1E56B3 0%, #24B3A8 100%);
+            background: linear-gradient(135deg, #2563EB 0%, #0D9488 100%);
             color: #FFFFFF;
             font-size: 20px;
             font-weight: 900;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px rgba(36, 179, 168, 0.4);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
             margin-bottom: 20px;
-            border: 3px solid #0B0F17;
+            border: 3px solid #F8FAFC;
         }
 
-        .step-title {
+        .step-title-light {
             font-size: 18px;
             font-weight: 800;
-            color: #FFFFFF;
+            color: #0F172A;
             margin-bottom: 8px;
             letter-spacing: -0.3px;
         }
 
-        .step-desc {
+        .step-desc-light {
             font-size: 13.5px;
-            color: var(--text-body);
+            color: #64748B;
             line-height: 1.5;
         }
 
         @media (max-width: 992px) {
-            .stepper-container-desktop {
+            .installation-section-light {
+                padding: 50px 0 60px;
+                margin: 40px 0 30px;
+            }
+            .installation-header-light h2 {
+                font-size: 28px;
+            }
+            .installation-header-light p {
+                font-size: 15px;
+            }
+            .stepper-container-desktop-light {
                 grid-template-columns: repeat(2, 1fr) !important;
                 gap: 16px !important;
             }
-            .stepper-container-desktop::before {
+            .stepper-container-desktop-light::before {
                 display: none !important;
             }
-            .step-node-item {
+            .step-node-item-light {
                 padding: 24px 14px !important;
                 border-radius: 18px !important;
             }
-            .step-title {
+            .step-title-light {
                 font-size: 16.5px !important;
             }
-            .step-desc {
+            .step-desc-light {
                 font-size: 12.5px !important;
             }
-            .step-badge-num {
+            .step-badge-num-light {
                 width: 44px !important;
                 height: 44px !important;
                 font-size: 17px !important;
@@ -1267,40 +1281,46 @@
                 </div>
             </div>
         </section>
+    </main>
 
-        <!-- Section 6: Connected Installation Process Stepper -->
-        <section class="installation-section-stepper" id="guide">
-            <div class="installation-header-stepper">
+    <!-- Section 6: Light Contrast Installation Process Stepper (Full-Bleed) -->
+    <section class="installation-section-light" id="guide">
+        <div class="container-wide">
+            <div class="installation-header-light">
                 <h2>Pasos para Instalar en tu Celular Android</h2>
                 <p>Instalación fácil y segura en menos de 1 minuto directamente en tu dispositivo.</p>
             </div>
 
-            <div class="stepper-container-desktop">
-                <div class="step-node-item">
-                    <div class="step-badge-num">1</div>
-                    <div class="step-title">Descargar APK</div>
-                    <div class="step-desc">Haz clic en el botón de descarga directa en esta página.</div>
+            <div class="stepper-container-desktop-light">
+                <div class="step-node-item-light">
+                    <div class="step-badge-num-light">1</div>
+                    <div class="step-title-light">Descargar APK</div>
+                    <div class="step-desc-light">Haz clic en el botón de descarga directa en esta página.</div>
                 </div>
 
-                <div class="step-node-item">
-                    <div class="step-badge-num">2</div>
-                    <div class="step-title">Confirmar Descarga</div>
-                    <div class="step-desc">Si tu navegador consulta sobre archivos APK, presiona "Descargar de todos modos".</div>
+                <div class="step-node-item-light">
+                    <div class="step-badge-num-light">2</div>
+                    <div class="step-title-light">Confirmar Descarga</div>
+                    <div class="step-desc-light">Si tu navegador consulta sobre archivos APK, presiona "Descargar de todos modos".</div>
                 </div>
 
-                <div class="step-node-item">
-                    <div class="step-badge-num">3</div>
-                    <div class="step-title">Instalar el Archivo</div>
-                    <div class="step-desc">Abre el archivo SpamQuarantine.apk desde tu barra de notificaciones e instala.</div>
+                <div class="step-node-item-light">
+                    <div class="step-badge-num-light">3</div>
+                    <div class="step-title-light">Instalar el Archivo</div>
+                    <div class="step-desc-light">Abre el archivo SpamQuarantine.apk desde tu barra de notificaciones e instala.</div>
                 </div>
 
-                <div class="step-node-item">
-                    <div class="step-badge-num">4</div>
-                    <div class="step-title">Activar Filtro</div>
-                    <div class="step-desc">Abre SpamQuarantine y concede el permiso de filtro predeterminado.</div>
+                <div class="step-node-item-light">
+                    <div class="step-badge-num-light">4</div>
+                    <div class="step-title-light">Activar Filtro</div>
+                    <div class="step-desc-light">Abre SpamQuarantine y concede el permiso de filtro predeterminado.</div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
+
+    <!-- Content Sections in Wide Container -->
+    <main class="container-wide">
 
         <!-- FAQ Accordion -->
         <section class="faq-section" id="faq">
