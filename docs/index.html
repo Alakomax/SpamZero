@@ -73,13 +73,57 @@
             padding: 0 clamp(16px, 4vw, 24px);
         }
 
-        /* Header Navigation */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header Navigation Sticky Glassmorphic */
         header {
-            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 15, 23, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-card);
+            padding: 16px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-card);
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: var(--text-body);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-title);
+        }
+
+        .btn-nav-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-green);
+            color: #FFFFFF;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-nav-download:hover {
+            background: var(--accent-green-hover);
         }
 
         .brand {
@@ -525,17 +569,22 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
+    <!-- Header Navigation Sticky Glassmorphic -->
     <header>
         <div class="container-nav" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
             <a href="#" class="brand">
                 <img src="logo_transparent.png?v=1.0.13" alt="SpamQuarantine Logo" class="brand-logo">
                 <span class="brand-title">SpamQuarantine</span>
             </a>
-            <div class="header-badges">
-                <span class="badge green"><i class="fa-solid fa-shield-halved"></i> 100% Offline</span>
-                <span class="badge"><i class="fa-brands fa-android"></i> Android Chile</span>
-            </div>
+            <nav class="nav-menu" aria-label="Navegación principal">
+                <a href="#features" class="nav-link">Funcionalidades</a>
+                <a href="#guide" class="nav-link">Instalación</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+                <a href="https://github.com/Alakomax/SpamQuarantine" target="_blank" class="nav-link"><i class="fa-brands fa-github"></i> GitHub</a>
+                <a href="SpamQuarantine.apk" class="btn-nav-download">
+                    <i class="fa-solid fa-download"></i> Descargar APK
+                </a>
+            </nav>
         </div>
     </header>
 
@@ -631,7 +680,7 @@
         </section>
 
         <!-- Features Grid -->
-        <section class="features-section">
+        <section class="features-section" id="features">
             <div class="features-grid">
                 <div class="card">
                     <div class="card-icon icon-gold"><i class="fa-solid fa-phone-slash"></i></div>
@@ -660,7 +709,7 @@
         </section>
 
         <!-- Installation Guide -->
-        <section class="guide-section">
+        <section class="guide-section" id="guide">
             <h2><i class="fa-solid fa-download" style="color: var(--accent-green);"></i> Pasos para Instalar en tu Celular Android</h2>
             <div class="guide-steps">
                 <div class="step-card">
@@ -690,7 +739,7 @@
         </section>
 
         <!-- FAQ Accordion -->
-        <section class="faq-section">
+        <section class="faq-section" id="faq">
             <h2>Preguntas Frecuentes</h2>
             <div class="faq-grid">
                 <div class="faq-item">
