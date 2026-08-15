@@ -281,8 +281,53 @@ fun HomeScreen(onRequestRole: () -> Unit) {
                 modifier = Modifier.weight(1f)
             )
         }
+
+        // Tarjeta "Invítame un café ☕"
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Invítame un café ☕",
+                        color = Color(0xFFF59E0B),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Apoya el desarrollo de la app con una donación en PayPal.",
+                        color = Color(0xFFCBD5E1),
+                        fontSize = 12.sp
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Button(
+                    onClick = {
+                        val intent = android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=omargonzalez76@gmail.com&currency_code=USD")
+                        )
+                        context.startActivity(intent)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59E0B)),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Text("Donar ☕", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
     }
 }
+
 
 @Composable
 fun MetricCard(title: String, value: String, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {

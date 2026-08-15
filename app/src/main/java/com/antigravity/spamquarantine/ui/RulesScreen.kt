@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,17 +33,10 @@ fun RulesScreen() {
 
     val loadRules = {
         scope.launch {
+            // Auto-sincronizar patrones por defecto faltantes (incluyendo filtros de SMS)
+            SpamRuleCache.getActiveRulesSync(context)
             val db = AppDatabase.getDatabase(context)
-            var currentRules = db.ruleDao().getAllRules()
-            if (currentRules.isEmpty()) {
-                // Precargar las reglas predeterminadas para Chile
-                PhoneUtils.getDefaultChileSpamPatterns().forEach { (pattern, desc) ->
-                    db.ruleDao().insertRule(RuleEntity(pattern = pattern, description = desc))
-                }
-                currentRules = db.ruleDao().getAllRules()
-            }
-            rules = currentRules
-            SpamRuleCache.updateCache(currentRules)
+            rules = db.ruleDao().getAllRules()
         }
     }
 
@@ -60,13 +54,29 @@ fun RulesScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Reglas de Patrones", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
-            IconButton(onClick = { showDialog = true }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar Regla", tint = MaterialTheme.colorScheme.primary)
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Reglas de Patrones", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                Text("Llamadas y SMS Spam", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Row {
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            SpamRuleCache.restoreDefaultRulesSync(context)
+                            loadRules()
+                        }
+                    }
+                ) {
+                    Icon(imageVector = Icons.Default.Refresh, contentDescription = "Restaurar Reglas Predeterminadas", tint = MaterialTheme.colorScheme.primary)
+                }
+                IconButton(onClick = { showDialog = true }) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar Regla", tint = MaterialTheme.colorScheme.primary)
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(rules) { rule ->

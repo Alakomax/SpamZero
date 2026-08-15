@@ -25,13 +25,18 @@ object SpamRuleCache {
             cachedRules ?: runBlocking(Dispatchers.IO) {
                 try {
                     val db = AppDatabase.getDatabase(context.applicationContext)
-                    var rules = db.ruleDao().getActiveRules()
-                    if (rules.isEmpty() && db.ruleDao().getRuleCount() == 0) {
-                        PhoneUtils.getDefaultChileSpamPatterns().forEach { (pattern, desc) ->
+                    val existingRules = db.ruleDao().getAllRules()
+                    val existingPatterns = existingRules.map { it.pattern }.toSet()
+
+                    var insertedAny = false
+                    PhoneUtils.getDefaultChileSpamPatterns().forEach { (pattern, desc) ->
+                        if (!existingPatterns.contains(pattern)) {
                             db.ruleDao().insertRule(RuleEntity(pattern = pattern, description = desc))
+                            insertedAny = true
                         }
-                        rules = db.ruleDao().getActiveRules()
                     }
+
+                    val rules = if (insertedAny) db.ruleDao().getActiveRules() else existingRules.filter { it.isActive }
                     cachedRules = rules
                     rules
                 } catch (e: Exception) {
@@ -42,6 +47,33 @@ object SpamRuleCache {
             }
         }
     }
+
+    /**
+     * Fuerza la restauración/reinicio de todas las reglas por defecto en la base de datos.
+     */
+    fun restoreDefaultRulesSync(context: Context): List<RuleEntity> {
+        return synchronized(this) {
+            runBlocking(Dispatchers.IO) {
+                try {
+                    val db = AppDatabase.getDatabase(context.applicationContext)
+                    val existingRules = db.ruleDao().getAllRules()
+                    val existingPatterns = existingRules.map { it.pattern }.toSet()
+
+                    PhoneUtils.getDefaultChileSpamPatterns().forEach { (pattern, desc) ->
+                        if (!existingPatterns.contains(pattern)) {
+                            db.ruleDao().insertRule(RuleEntity(pattern = pattern, description = desc))
+                        }
+                    }
+                    val rules = db.ruleDao().getAllRules()
+                    cachedRules = rules.filter { it.isActive }
+                    rules
+                } catch (e: Exception) {
+                    emptyList()
+                }
+            }
+        }
+    }
+
 
     /**
      * Invalida el caché en memoria para que se recargue la próxima vez desde la BD.

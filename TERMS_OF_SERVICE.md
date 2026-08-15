@@ -29,9 +29,11 @@ SpamQuarantine es una herramienta de software nativo para dispositivos Android d
 
 ---
 
-## 5. Licencia de Software y Código Abierto
+## 5. Licencia de Software y Propiedad Intelectual
 
-SpamQuarantine es un proyecto de código abierto distribuido bajo la **Licencia MIT**. El usuario tiene derecho a inspeccionar, modificar y redistribuir el código fuente de acuerdo con los términos de dicha licencia.
+SpamQuarantine es un proyecto de **código fuente visible** (*Source-Available*). El código se publica en GitHub exclusivamente para auditoría técnica, seguridad y verificación de privacidad. 
+
+Todos los derechos de autor están reservados (Copyright © 2026 Alakomax / Omar González). Queda estrictamente prohibida la copia, modificación con fines redistributivos, publicación en tiendas de aplicaciones o cualquier explotación comercial de esta obra sin la autorización previa por escrito del autor.
 
 ---
 

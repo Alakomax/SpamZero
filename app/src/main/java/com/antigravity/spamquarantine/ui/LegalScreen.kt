@@ -15,9 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,11 +123,12 @@ fun TermsSection() {
 
 @Composable
 fun LicensesSection() {
+    val context = LocalContext.current
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         LegalCard(
-            title = "Licencia de Código Abierto (MIT)",
+            title = "Código Fuente Visible (Derechos Reservados)",
             icon = Icons.Default.Info,
-            description = "Copyright (c) 2026 Alakomax. Licencia libre para usar, copiar, modificar y redistribuir el software."
+            description = "Copyright (c) 2026 Alakomax / Omar González. Reservados todos los derechos. El código fuente es público exclusivamente para auditoría y verificación de seguridad. Se prohíbe el uso comercial o lucrativo por terceros."
         )
 
         LegalCard(
@@ -133,8 +136,48 @@ fun LicensesSection() {
             icon = Icons.Default.Shield,
             description = "Desarrollado con AndroidX, Kotlin, Jetpack Compose, Room Database y Material Design Icons bajo Licencia Apache 2.0."
         )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        // Tarjeta de Apoyo / Donación en Legal
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Apoya el Desarrollo Independiente ☕",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color(0xFFF59E0B)
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = "SpamQuarantine es 100% gratuita, privada y sin publicidad. Si la app te ha evitado llamadas y SMS molestos, puedes invitarme un café para apoyar su mantenimiento continuo.",
+                    fontSize = 13.sp,
+                    color = Color(0xFFE2E8F0),
+                    lineHeight = 18.sp
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = {
+                        val intent = android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=omargonzalez76@gmail.com&currency_code=USD")
+                        )
+                        context.startActivity(intent)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59E0B)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Invítame un café en PayPal ☕", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
     }
 }
+
 
 @Composable
 fun LegalCard(title: String, icon: androidx.compose.ui.graphics.vector.ImageVector, description: String) {

@@ -38,9 +38,10 @@ Para cumplir con su función principal de interceptación previa al timbre de ll
 
 ---
 
-## 5. Ausencia de Cookies
+## 5. Ausencia de Cookies y Donaciones Voluntarias
 
-SpamQuarantine es una aplicación nativa pura desarrollada en Kotlin/AndroidX. **No se emplean cookies de navegación, rastreadores web ni tecnologías de almacenamiento de sesión HTTP.**
+1. **Cookies:** SpamQuarantine es una aplicación nativa pura desarrollada en Kotlin/AndroidX. No se emplean cookies de navegación, rastreadores web ni tecnologías de almacenamiento de sesión HTTP.
+2. **Donaciones Voluntarias:** La opción "Invítame un café ☕" es 100% voluntaria y redirige de forma externa a PayPal (`omargonzalez76@gmail.com`). La aplicación no almacena ni procesa datos bancarios o financieros del usuario.
 
 ---
 
@@ -52,5 +53,6 @@ Cualquier actualización a esta política será documentada en el repositorio of
 
 ## 7. Contacto y Transparencia
 
-Si tiene dudas sobre el funcionamiento técnico o la privacidad de la aplicación, puede revisar directamente el código fuente abierto del proyecto en:
+Si tiene dudas sobre el funcionamiento técnico o la privacidad de la aplicación, puede revisar directamente el código fuente público del proyecto en:
 [https://github.com/Alakomax/SpamQuarantine](https://github.com/Alakomax/SpamQuarantine)
+
