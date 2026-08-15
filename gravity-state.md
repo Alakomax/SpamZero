@@ -1,10 +1,11 @@
 ## [ESTADO ACTUAL] Última actualización: 2026-08-15 | Dominio: dev/SpamQuarantine
-- Objetivo Activo: Versión v1.0.12 publicada y desplegada en GitHub.
-- Última Acción: Commit y Push exitosos a GitHub (`origin/main`) con el tag `v1.0.12`.
-- Decisiones/Bloqueos: Ninguno. Licencia MIT actualizada a Todos los Derechos Reservados, auto-sync de reglas de SMS activo en BD local, botón de restauración en RulesScreen y tarjeta de donaciones PayPal integrada en HomeScreen y LegalScreen.
-- Siguiente Paso: Disponible para próximos requerimientos o feedback de los testers.
+- Objetivo Activo: Integración del logo vectorial SVG/PNG nativo creado en Inkscape en app y web.
+- Última Acción: Inserción de `SpamQuarantine_Logo.svg` y `SpamQuarantine_Logo.png` exportados a 300 DPI desde Inkscape, desplegados en `logo/` y `docs/` con tag `?v=1.0.13` para la web oficial.
+- Decisiones/Bloqueos: Ninguno. Logo oficial 100% vectorial, nítido y con fondo transparente e ícono de teléfono blanco brillante.
+- Siguiente Paso: Disponible para próximos requerimientos o lanzamientos.
 
 ## Historial Reciente
+- 2026-08-15: Vectorización exitosa del logo oficial en Inkscape (`SpamQuarantine_Logo.svg`), exportación a 300 DPI (`SpamQuarantine_Logo.png`) e integración en GitHub Pages y app.
 - 2026-08-15: Publicación exitosa de v1.0.12 en GitHub con el tag v1.0.12 (Commit: feat: v1.0.12 - Auto-sync SMS rules, restore rules button, proprietary license & PayPal donation).
 - 2026-08-15: Lanzamiento de v1.0.12: Auto-sincronización de reglas SMS en instalaciones existentes, botón para restaurar reglas por defecto, actualización a Licencia de Derechos Reservados e integración de botón "Invítame un café ☕" en PayPal.
 - 2026-08-11: Creación de la carpeta logo/ con la imagen oficial de alta resolución. Publicación de v1.0.11 en GitHub.
