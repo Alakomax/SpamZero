@@ -55,10 +55,22 @@
             overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1040px;
+        .container-nav {
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 clamp(16px, 4vw, 32px);
+        }
+
+        .container-hero {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 0 clamp(16px, 4vw, 24px);
+        }
+
+        .container-wide {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 clamp(16px, 4vw, 24px);
         }
 
         /* Header Navigation */
@@ -513,9 +525,9 @@
 </head>
 <body>
 
-    <div class="container">
-        <!-- Header -->
-        <header>
+    <!-- Header Navigation -->
+    <header>
+        <div class="container-nav" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
             <a href="#" class="brand">
                 <img src="logo_transparent.png?v=1.0.13" alt="SpamQuarantine Logo" class="brand-logo">
                 <span class="brand-title">SpamQuarantine</span>
@@ -524,10 +536,12 @@
                 <span class="badge green"><i class="fa-solid fa-shield-halved"></i> 100% Offline</span>
                 <span class="badge"><i class="fa-brands fa-android"></i> Android Chile</span>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <!-- Hero Section -->
-        <section class="hero">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container-hero">
             <div class="hero-pill">
                 <i class="fa-solid fa-bolt"></i> Cortafuegos Anti-Spam de Alta Precisión
             </div>
@@ -544,8 +558,11 @@
                 </a>
             </div>
             <p class="cta-info"><i class="fa-solid fa-check-circle" style="color: var(--accent-green);"></i> Descarga directa en 1 clic • Versión v1.0.12 • Gratuita y sin anuncios</p>
-        </section>
+        </div>
+    </section>
 
+    <!-- Content Sections in Wide Container -->
+    <main class="container-wide">
         <!-- Stats Bar -->
         <section class="stats-bar">
             <div class="stat-item">
@@ -698,7 +715,7 @@
             <p>© 2026 Alakomax / Omar González. Reservados todos los derechos.</p>
             <p style="margin-top: 6px;">Código fuente auditable disponible en <a href="https://github.com/Alakomax/SpamQuarantine" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>.</p>
         </footer>
-    </div>
+    </main>
 
 </body>
 </html>
