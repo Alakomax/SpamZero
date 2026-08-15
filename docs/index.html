@@ -350,34 +350,100 @@
             color: var(--text-dim);
         }
 
-        /* Trust Stats Bar */
-        .stats-bar {
+        /* Section 3: Neumorphic Neon Glow Cards (Img3 Reference) */
+        .stats-section {
+            margin: 50px 0 70px;
+        }
+
+        .stats-grid-neon {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 20px;
-            padding: 24px;
-            margin: 50px 0;
-            backdrop-filter: blur(10px);
+            gap: 24px;
         }
 
-        .stat-item {
-            text-align: center;
+        .neon-card {
+            position: relative;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
         }
 
-        .stat-number {
-            font-size: 28px;
-            font-weight: 900;
-            color: var(--accent-gold);
-            font-family: 'Outfit', sans-serif;
+        .neon-card::after {
+            content: '';
+            position: absolute;
+            bottom: -35px;
+            left: 8%;
+            right: 8%;
+            height: 70px;
+            border-radius: 50%;
+            filter: blur(30px);
+            opacity: 0.65;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            z-index: 0;
+            pointer-events: none;
         }
 
-        .stat-label {
-            font-size: 13px;
+        /* Color Variants for Neon Glows */
+        .neon-card.gold::after { background: rgba(245, 158, 11, 0.85); }
+        .neon-card.blue::after { background: rgba(59, 130, 246, 0.85); }
+        .neon-card.green::after { background: rgba(16, 185, 129, 0.85); }
+        .neon-card.pink::after { background: rgba(236, 72, 153, 0.85); }
+
+        .neon-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .neon-card:hover::after {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        .card-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-icon-box.gold { color: var(--accent-gold); border-color: rgba(245, 158, 11, 0.3); }
+        .card-icon-box.blue { color: var(--accent-blue); border-color: rgba(59, 130, 246, 0.3); }
+        .card-icon-box.green { color: var(--accent-green); border-color: rgba(16, 185, 129, 0.3); }
+        .card-icon-box.pink { color: #EC4899; border-color: rgba(236, 72, 153, 0.3); }
+
+        .card-title-neon {
+            font-size: 26px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-desc-neon {
+            font-size: 14px;
             color: var(--text-body);
-            font-weight: 600;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
         }
 
         /* Phone UI Preview Mockup */
@@ -792,23 +858,40 @@
 
     <!-- Content Sections in Wide Container -->
     <main class="container-wide">
-        <!-- Stats Bar -->
-        <section class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-number">0</div>
-                <div class="stat-label">Repiques (Corte Inmediato)</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">Privado y Local</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">0</div>
-                <div class="stat-label">Servidores en la Nube</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">.TXT</div>
-                <div class="stat-label">Informe Probatorio SERNAC</div>
+        <!-- Section 3: Neumorphic Neon Glow Cards (Img3 Reference) -->
+        <section class="stats-section">
+            <div class="stats-grid-neon">
+                <div class="neon-card gold">
+                    <div class="card-icon-box gold">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="card-title-neon">0 Repiques</div>
+                    <div class="card-desc-neon">Intercepción instantánea antes del primer timbre.</div>
+                </div>
+
+                <div class="neon-card blue">
+                    <div class="card-icon-box blue">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="card-title-neon">100% Privado</div>
+                    <div class="card-desc-neon">Todo el procesamiento corre localmente en tu celular.</div>
+                </div>
+
+                <div class="neon-card green">
+                    <div class="card-icon-box green">
+                        <i class="fa-solid fa-server"></i>
+                    </div>
+                    <div class="card-title-neon">0 Nube</div>
+                    <div class="card-desc-neon">Cero servidores externos y cero anuncios molestos.</div>
+                </div>
+
+                <div class="neon-card pink">
+                    <div class="card-icon-box pink">
+                        <i class="fa-solid fa-file-contract"></i>
+                    </div>
+                    <div class="card-title-neon">Informe .TXT</div>
+                    <div class="card-desc-neon">Evidencia probatoria formal lista para el SERNAC.</div>
+                </div>
             </div>
         </section>
 
