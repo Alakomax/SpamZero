@@ -446,110 +446,126 @@
             z-index: 1;
         }
 
-        /* Section 4: Section Background Contrast & Interactive Showcase */
-        .showcase-section {
-            background: linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 70px 0;
-            margin: 40px 0;
+        /* Section 4: Light Contrast Showcase (Truecaller Img2 Reference) */
+        .showcase-section-light {
+            background: #F8FAFC;
+            color: #0F172A;
+            padding: 80px 0 90px;
+            margin: 60px 0 40px;
             width: 100%;
         }
 
-        .showcase-header {
+        .showcase-header-light {
             text-align: center;
-            max-width: 680px;
-            margin: 0 auto 36px;
+            max-width: 720px;
+            margin: 0 auto 50px;
         }
 
-        .showcase-header h2 {
-            font-size: 36px;
+        .showcase-header-light h2 {
+            font-size: 38px;
             font-weight: 900;
-            color: #FFFFFF;
-            margin-bottom: 12px;
-            letter-spacing: -0.8px;
+            color: #0F172A;
+            margin-bottom: 14px;
+            letter-spacing: -1px;
         }
 
-        .showcase-header p {
-            font-size: 16.5px;
-            color: var(--text-body);
+        .showcase-header-light p {
+            font-size: 17px;
+            color: #475569;
+            line-height: 1.5;
         }
 
-        /* Showcase Desktop Tabs */
-        .showcase-tabs {
+        /* Desktop Truecaller Multi-Phone Grid (> 992px) */
+        .showcase-grid-desktop {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 36px;
+            align-items: start;
+        }
+
+        .showcase-col-item {
             display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 36px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            display: inline-flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: var(--text-body);
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 14.5px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s ease;
+            text-align: center;
         }
 
-        .tab-btn:hover {
-            color: #FFFFFF;
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #1E56B3 0%, #24B3A8 100%);
-            color: #FFFFFF;
-            border-color: transparent;
-            box-shadow: 0 8px 25px rgba(36, 179, 168, 0.35);
-        }
-
-        /* Phone Frame Desktop Display */
-        .showcase-desktop-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .phone-display-frame {
-            position: relative;
+        .phone-mockup-light {
             width: 100%;
-            max-width: 330px;
-            border-radius: 36px;
-            padding: 10px;
-            background: #111827;
-            border: 3px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 50px rgba(36, 179, 168, 0.2);
-            transition: all 0.3s ease;
+            max-width: 280px;
+            border-radius: 32px;
+            padding: 8px;
+            background: #0F172A;
+            border: 2px solid #CBD5E1;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.15), 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
         }
 
-        .phone-display-frame img {
+        .phone-mockup-light:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(15, 23, 42, 0.22);
+        }
+
+        .phone-mockup-light img {
             width: 100%;
             height: auto;
-            border-radius: 28px;
+            border-radius: 24px;
             display: block;
         }
 
-        /* Mobile Touch Slider (< 768px) */
-        @media (max-width: 768px) {
-            .showcase-section {
-                padding: 40px 0;
-                margin: 30px 0;
+        .col-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #2563EB;
+            color: #FFFFFF;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 14.5px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        .col-badge-pill.green { background: #059669; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3); }
+        .col-badge-pill.teal { background: #0D9488; box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3); }
+
+        .col-title-light {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 6px;
+        }
+
+        .col-desc-light {
+            font-size: 14px;
+            color: #64748B;
+            line-height: 1.5;
+            max-width: 260px;
+        }
+
+        /* Mobile Touch Slider (< 992px) */
+        @media (max-width: 992px) {
+            .showcase-section-light {
+                padding: 50px 0 60px;
+                margin-top: 30px;
             }
-            .showcase-tabs {
+
+            .showcase-header-light h2 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .showcase-header-light p {
+                font-size: 15px;
+            }
+
+            .showcase-grid-desktop {
                 display: none !important;
             }
-            .showcase-desktop-wrapper {
-                display: none !important;
-            }
+
             .showcase-slider-mobile {
                 display: flex !important;
                 gap: 16px;
@@ -559,30 +575,34 @@
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
             }
+
             .showcase-slider-mobile::-webkit-scrollbar {
                 display: none;
             }
+
             .slider-mobile-item {
                 scroll-snap-align: center;
                 flex: 0 0 78%;
                 max-width: 290px;
                 text-align: center;
             }
+
             .slider-mobile-item img {
                 width: 100%;
                 border-radius: 24px;
-                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
-                border: 2px solid rgba(255, 255, 255, 0.12);
+                box-shadow: 0 15px 35px rgba(15, 23, 42, 0.2);
+                border: 2px solid #CBD5E1;
             }
+
             .slider-mobile-title {
                 margin-top: 12px;
-                font-size: 14px;
-                font-weight: 700;
-                color: #FFFFFF;
+                font-size: 14.5px;
+                font-weight: 800;
+                color: #0F172A;
             }
         }
 
-        @media (min-width: 769px) {
+        @media (min-width: 993px) {
             .showcase-slider-mobile {
                 display: none !important;
             }
@@ -991,34 +1011,54 @@
             </div>
         </section>
 
-        <!-- Section 4: Section Background Contrast & Interactive App Screens Showcase -->
-        <section class="showcase-section">
-            <div class="showcase-header">
+    <!-- Section 4: Light Contrast Showcase (Truecaller Img2 Reference) -->
+    <section class="showcase-section-light">
+        <div class="container-wide">
+            <div class="showcase-header-light">
                 <h2>Diseño Intuitivo y Potente</h2>
                 <p>Monitorea y controla tu protección con una interfaz limpia y optimizada en tu celular Android.</p>
             </div>
 
-            <!-- Desktop Tabs Navigation -->
-            <div class="showcase-tabs">
-                <button class="tab-btn active" onclick="switchTab('quarantine', this)">
-                    <i class="fa-solid fa-phone-slash"></i> Historial Cuarentena
-                </button>
-                <button class="tab-btn" onclick="switchTab('rules', this)">
-                    <i class="fa-solid fa-sliders"></i> Reglas de Patrones
-                </button>
-                <button class="tab-btn" onclick="switchTab('legal', this)">
-                    <i class="fa-solid fa-shield-halved"></i> Protección Legal
-                </button>
-            </div>
+            <!-- Desktop Truecaller 3-Column Layout (> 992px) -->
+            <div class="showcase-grid-desktop">
+                <!-- Column 1 -->
+                <div class="showcase-col-item">
+                    <div class="phone-mockup-light">
+                        <img src="app_screen_quarantine.png" alt="Pantalla de Historial Cuarentena">
+                    </div>
+                    <div class="col-badge-pill">
+                        <i class="fa-solid fa-phone-slash"></i> Bloqueo de Spam
+                    </div>
+                    <div class="col-title-light">Historial en Cuarentena</div>
+                    <div class="col-desc-light">Intercepción automática a 0 repiques antes del primer timbre.</div>
+                </div>
 
-            <!-- Desktop Single Interactive Phone Frame -->
-            <div class="showcase-desktop-wrapper">
-                <div class="phone-display-frame">
-                    <img id="showcaseDisplayImg" src="app_screen_quarantine.png" alt="Pantalla de Cuarentena SpamQuarantine">
+                <!-- Column 2 -->
+                <div class="showcase-col-item">
+                    <div class="phone-mockup-light">
+                        <img src="app_screen_rules.png" alt="Pantalla de Reglas de Patrones">
+                    </div>
+                    <div class="col-badge-pill green">
+                        <i class="fa-solid fa-comment-slash"></i> Detección de Fraude SMS
+                    </div>
+                    <div class="col-title-light">Filtro de Patrones</div>
+                    <div class="col-desc-light">Aísla automáticamente SMS engañosos de TAG, Copec y casinos.</div>
+                </div>
+
+                <!-- Column 3 -->
+                <div class="showcase-col-item">
+                    <div class="phone-mockup-light">
+                        <img src="app_screen_legal.png" alt="Pantalla de Información Legal">
+                    </div>
+                    <div class="col-badge-pill teal">
+                        <i class="fa-solid fa-shield-halved"></i> Privacidad 100% Local
+                    </div>
+                    <div class="col-title-light">0 Nube y 0 Anuncios</div>
+                    <div class="col-desc-light">Tus contactos y llamadas se procesan solo en tu dispositivo.</div>
                 </div>
             </div>
 
-            <!-- Mobile Swipeable Touch Slider (< 768px) -->
+            <!-- Mobile Swipeable Touch Slider (< 992px) -->
             <div class="showcase-slider-mobile">
                 <div class="slider-mobile-item">
                     <img src="app_screen_quarantine.png" alt="Pantalla de Historial Cuarentena">
@@ -1033,7 +1073,8 @@
                     <div class="slider-mobile-title">⚖️ Privacidad 100% Local</div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
         <!-- Features Grid -->
         <section class="features-section" id="features">
