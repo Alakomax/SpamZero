@@ -558,12 +558,92 @@
             font-weight: 600;
         }
 
+        .mobile-menu-toggle {
+            display: none;
+        }
+
         @media (max-width: 768px) {
-            .hero h1 { font-size: 34px; }
-            .stats-bar { grid-template-columns: repeat(2, 1fr); }
-            .header-badges { display: none; }
-            .btn-primary { width: 100%; justify-content: center; }
-            .btn-coffee { width: 100%; justify-content: center; }
+            .desktop-only {
+                display: none !important;
+            }
+
+            header {
+                padding: 12px 0;
+            }
+
+            .mobile-menu-toggle {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid var(--border-card);
+                color: var(--text-title);
+                width: 42px;
+                height: 42px;
+                border-radius: 10px;
+                font-size: 18px;
+                cursor: pointer;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(11, 15, 23, 0.96);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border-bottom: 1px solid var(--border-card);
+                padding: 20px 24px;
+                gap: 16px;
+                align-items: flex-start;
+                box-shadow: 0 20px 30px rgba(0, 0, 0, 0.8);
+            }
+
+            .nav-menu.active {
+                display: flex !important;
+            }
+
+            .nav-link {
+                font-size: 16px;
+                width: 100%;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .btn-nav-download {
+                width: 100%;
+                justify-content: center;
+                font-size: 15px;
+                padding: 12px 20px;
+            }
+
+            .hero {
+                padding: 32px 0 24px;
+            }
+
+            .hero h1 {
+                font-size: 26px !important;
+                line-height: 1.25;
+            }
+
+            .hero p {
+                font-size: 15px !important;
+                margin-bottom: 24px;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .btn-primary, .btn-coffee {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -571,12 +651,17 @@
 
     <!-- Header Navigation Sticky Glassmorphic -->
     <header>
-        <div class="container-nav" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+        <div class="container-nav" style="display: flex; align-items: center; justify-content: space-between; width: 100%; position: relative;">
             <a href="#" class="brand">
                 <img src="logo_transparent.png?v=1.0.13" alt="SpamQuarantine Logo" class="brand-logo">
-                <span class="brand-title">SpamQuarantine</span>
+                <span class="brand-title desktop-only">SpamQuarantine</span>
             </a>
-            <nav class="nav-menu" aria-label="Navegación principal">
+
+            <button class="mobile-menu-toggle" id="menuToggle" aria-label="Abrir menú de navegación">
+                <i class="fa-solid fa-bars" id="menuIcon"></i>
+            </button>
+
+            <nav class="nav-menu" id="navMenu" aria-label="Navegación principal">
                 <a href="#features" class="nav-link">Funcionalidades</a>
                 <a href="#guide" class="nav-link">Instalación</a>
                 <a href="#faq" class="nav-link">FAQ</a>
@@ -766,5 +851,33 @@
         </footer>
     </main>
 
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const menuIcon = document.getElementById('menuIcon');
+
+        if (menuToggle && navMenu) {
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                if (navMenu.classList.contains('active')) {
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-xmark');
+                } else {
+                    menuIcon.classList.remove('fa-xmark');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
+
+            document.querySelectorAll('.nav-link, .btn-nav-download').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    if (menuIcon) {
+                        menuIcon.classList.remove('fa-xmark');
+                        menuIcon.classList.add('fa-bars');
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
