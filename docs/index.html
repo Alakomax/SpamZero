@@ -901,61 +901,278 @@
                 font-size: 17px !important;
                 margin-bottom: 14px !important;
             }
+        }        /* Section 7: Interactive FAQ Accordion */
+        .faq-section-modern {
+            padding: 60px 0 70px;
+            margin: 30px 0 0 0;
         }
 
-        /* FAQ Section */
-        .faq-section {
-            margin: 70px 0;
-        }
-
-        .faq-section h2 {
-            font-size: 32px;
-            font-weight: 800;
+        .faq-header-modern {
             text-align: center;
-            margin-bottom: 40px;
+            max-width: 680px;
+            margin: 0 auto 46px;
         }
 
-        .faq-grid {
-            display: grid;
-            gap: 16px;
+        .faq-header-modern h2 {
+            font-size: 36px;
+            font-weight: 900;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            letter-spacing: -0.8px;
         }
 
-        .faq-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 14px;
-            padding: 20px 24px;
-        }
-
-        .faq-item h4 {
-            font-size: 17px;
-            font-weight: 700;
-            color: #F8FAFC;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .faq-item p {
-            font-size: 14px;
+        .faq-header-modern p {
+            font-size: 16px;
             color: var(--text-body);
         }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding-top: 50px;
-            border-top: 1px solid var(--border-card);
-            color: var(--text-dim);
-            font-size: 14px;
+        .faq-accordion-grid {
+            max-width: 820px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        footer a {
-            color: var(--text-title);
-            text-decoration: none;
-            font-weight: 600;
+        .faq-item-accordion {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
         }
+
+        .faq-item-accordion[open] {
+            border-color: rgba(36, 179, 168, 0.35);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .faq-summary {
+            padding: 22px 24px;
+            font-size: 17px;
+            font-weight: 700;
+            color: #FFFFFF;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            user-select: none;
+        }
+
+        .faq-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-summary-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--accent-green);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .faq-item-accordion[open] .faq-summary-icon {
+            transform: rotate(180deg);
+            background: rgba(36, 179, 168, 0.2);
+        }
+
+        .faq-content {
+            padding: 0 24px 22px;
+            font-size: 14.5px;
+            color: var(--text-body);
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 4px;
+            padding-top: 16px;
+        }
+
+        /* Pre-Footer CTA Banner with Organic Curved Cutout (User Image Ref) */
+        .cta-banner-section {
+            position: relative;
+            background: linear-gradient(135deg, #0B0F17 0%, #1E293B 100%);
+            color: #FFFFFF;
+            padding: 90px 0 140px;
+            margin-top: 70px;
+            text-align: center;
+            overflow: hidden;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .cta-banner-container {
+            position: relative;
+            z-index: 2;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .cta-banner-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(36, 179, 168, 0.12);
+            border: 1px solid rgba(36, 179, 168, 0.3);
+            color: #24B3A8;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cta-banner-section h2 {
+            font-size: 44px;
+            font-weight: 900;
+            color: #FFFFFF;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+            line-height: 1.15;
+        }
+
+        .cta-banner-section p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 36px;
+            line-height: 1.5;
+        }
+
+        /* SVG Organic Asymmetric Bottom Curve Divider */
+        .organic-curve-divider {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            z-index: 1;
+        }
+
+        .organic-curve-divider svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 70px;
+        }
+
+        .organic-curve-divider .shape-fill {
+            fill: #F8FAFC;
+        }
+
+        /* Modern Light Footer (#F8FAFC) */
+        .site-footer-light {
+            background: #F8FAFC;
+            color: #0F172A;
+            padding: 60px 0 36px;
+            border-top: 1px solid #E2E8F0;
+        }
+
+        .footer-grid-light {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand-light {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            text-decoration: none;
+        }
+
+        .footer-brand-logo {
+            width: 40px;
+            height: 40px;
+        }
+
+        .footer-brand-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #0F172A;
+        }
+
+        .footer-brand-desc {
+            font-size: 14px;
+            color: #64748B;
+            line-height: 1.6;
+            max-width: 340px;
+        }
+
+        .footer-col-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 16px;
+            letter-spacing: -0.2px;
+        }
+
+        .footer-links-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links-list a {
+            color: #475569;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links-list a:hover {
+            color: #2563EB;
+        }
+
+        .footer-bottom-bar-light {
+            padding-top: 28px;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13.5px;
+            color: #64748B;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-bottom-bar-light a {
+            color: #0F172A;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .cta-banner-section {
+                padding: 60px 0 100px;
+            }
+            .cta-banner-section h2 {
+                font-size: 30px;
+            }
+            .cta-banner-section p {
+                font-size: 15px;
+            }
+            .footer-grid-light {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .footer-bottom-bar-light {
+                flex-direction: column;
+                text-align: center;
+            }
+        } }
 
         .mobile-menu-toggle {
             display: none;
@@ -1322,33 +1539,118 @@
     <!-- Content Sections in Wide Container -->
     <main class="container-wide">
 
-        <!-- FAQ Accordion -->
-        <section class="faq-section" id="faq">
-            <h2>Preguntas Frecuentes</h2>
-            <div class="faq-grid">
-                <div class="faq-item">
-                    <h4><i class="fa-solid fa-circle-question" style="color: var(--accent-gold);"></i> ¿La aplicación es 100% gratuita?</h4>
-                    <p>Sí, SpamQuarantine es un proyecto de código abierto totalmente gratuito y sin publicidad ni cobros ocultos.</p>
-                </div>
+        <!-- Section 7: Interactive FAQ Accordion -->
+        <section class="faq-section-modern" id="faq">
+            <div class="faq-header-modern">
+                <h2>Preguntas Frecuentes</h2>
+                <p>Respuestas claras sobre privacidad, instalación y funcionamiento nativo en Android.</p>
+            </div>
 
-                <div class="faq-item">
-                    <h4><i class="fa-solid fa-circle-question" style="color: var(--accent-gold);"></i> ¿Mis contactos o llamadas se envían a internet?</h4>
-                    <p>No. La app no posee servidores externos ni conexión a bases de datos en la nube. Todo el procesamiento se realiza en el procesador de tu celular.</p>
-                </div>
+            <div class="faq-accordion-grid">
+                <details class="faq-item-accordion" open>
+                    <summary class="faq-summary">
+                        <span><i class="fa-solid fa-circle-question" style="color: var(--accent-gold); margin-right: 8px;"></i> ¿La aplicación es 100% gratuita y sin anuncios?</span>
+                        <span class="faq-summary-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="faq-content">
+                        Sí. SpamQuarantine es un proyecto de código abierto totalmente gratuito, desarrollado sin fines de lucro. No incluye anuncios publicitarios, suscripciones ocultas ni compras integradas.
+                    </div>
+                </details>
 
-                <div class="faq-item">
-                    <h4><i class="fa-solid fa-circle-question" style="color: var(--accent-gold);"></i> ¿Por qué Android muestra una advertencia al instalar?</h4>
-                    <p>Android siempre advierte cuando se instala una aplicación directamente mediante archivo APK fuera de Google Play. Puedes instalarla con total tranquilidad ya que no contiene código malicioso.</p>
-                </div>
+                <details class="faq-item-accordion">
+                    <summary class="faq-summary">
+                        <span><i class="fa-solid fa-user-shield" style="color: var(--accent-blue); margin-right: 8px;"></i> ¿Mis contactos o llamadas se envían a servidores en la nube?</span>
+                        <span class="faq-summary-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="faq-content">
+                        No. La app no posee servidores propios ni envía telemetría a la nube. Toda la base de datos de patrones y la lista blanca de tus contactos se procesan localmente en el chip de tu celular.
+                    </div>
+                </details>
+
+                <details class="faq-item-accordion">
+                    <summary class="faq-summary">
+                        <span><i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-gold); margin-right: 8px;"></i> ¿Por qué Android muestra una advertencia al instalar el APK?</span>
+                        <span class="faq-summary-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="faq-content">
+                        Android alerta automáticamente por seguridad al instalar cualquier aplicación directamente desde un archivo .APK fuera de Google Play Store. Puedes instalar SpamQuarantine con total tranquilidad; el código fuente es público y auditable en GitHub.
+                    </div>
+                </details>
+
+                <details class="faq-item-accordion">
+                    <summary class="faq-summary">
+                        <span><i class="fa-solid fa-file-contract" style="color: var(--accent-green); margin-right: 8px;"></i> ¿Cómo funciona el informe probatorio para el SERNAC?</span>
+                        <span class="faq-summary-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="faq-content">
+                        La app permite exportar un archivo .txt con timestamps exactos, números de origen y registros de intercepción a 0 repiques. Este archivo sirve como prueba formal para realizar reclamos efectivos en el SERNAC, PDI o Juzgados de Policía Local.
+                    </div>
+                </details>
             </div>
         </section>
-
-        <!-- Footer -->
-        <footer>
-            <p>© 2026 Alakomax / Omar González. Reservados todos los derechos.</p>
-            <p style="margin-top: 6px;">Código fuente auditable disponible en <a href="https://github.com/Alakomax/SpamQuarantine" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>.</p>
-        </footer>
     </main>
+
+    <!-- Pre-Footer CTA Banner with Organic Curved Cutout (User Image Ref) -->
+    <section class="cta-banner-section">
+        <div class="container-wide">
+            <div class="cta-banner-container">
+                <div class="cta-banner-badge">
+                    <i class="fa-solid fa-shield-halved"></i> Cortafuegos Anti-Spam #1 en Chile
+                </div>
+                <h2>Recupera la Paz en tu Celular Hoy Mismo</h2>
+                <p>Bloquea llamadas no deseadas a 0 repiques y aísla SMS fraudulentos de TAG o apuestas. 100% gratuita, privada y lista para usar.</p>
+
+                <a href="SpamQuarantine.apk" class="btn-truecaller-style" id="finalDownloadBtn">
+                    <i class="fa-solid fa-download"></i> Descargar SpamQuarantine (.APK)
+                </a>
+            </div>
+        </div>
+
+        <!-- SVG Organic Asymmetric Bottom Curve Divider -->
+        <div class="organic-curve-divider">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,0 C150,90 350,-40 500,65 C650,140 900,10 1200,60 L1200,120 L0,120 Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Modern Light Footer (#F8FAFC) -->
+    <footer class="site-footer-light">
+        <div class="container-wide">
+            <div class="footer-grid-light">
+                <div>
+                    <a href="#" class="footer-brand-light">
+                        <img src="logo_transparent.png?v=1.0.13" alt="SpamQuarantine Logo" class="footer-brand-logo">
+                        <span class="footer-brand-title">SpamQuarantine</span>
+                    </a>
+                    <p class="footer-brand-desc">Aplicación Android nativa para interceptar llamadas spam a 0 repiques y aislar SMS fraudulentos en Chile. 100% privada y local.</p>
+                </div>
+
+                <div>
+                    <div class="footer-col-title">Navegación</div>
+                    <ul class="footer-links-list">
+                        <li><a href="#features">Funcionalidades</a></li>
+                        <li><a href="#guide">Pasos de Instalación</a></li>
+                        <li><a href="#faq">Preguntas Frecuentes</a></li>
+                        <li><a href="https://github.com/Alakomax/SpamQuarantine" target="_blank">Código en GitHub</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <div class="footer-col-title">Comunidad & Apoyo</div>
+                    <ul class="footer-links-list">
+                        <li><a href="https://github.com/Alakomax/SpamQuarantine" target="_blank"><i class="fa-brands fa-github"></i> Repositorio Abierto</a></li>
+                        <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=omargonzalez76@gmail.com&currency_code=USD" target="_blank" style="color: #D97706; font-weight: 700;"><i class="fa-solid fa-mug-hot"></i> Invítame un café ☕</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom-bar-light">
+                <div>© 2026 Alakomax / Omar González. Reservados todos los derechos.</div>
+                <div>Código fuente auditable disponible en <a href="https://github.com/Alakomax/SpamQuarantine" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>.</div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         function switchTab(screen, btn) {
