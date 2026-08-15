@@ -18,6 +18,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Structured Data SEO (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SpamQuarantine",
+      "operatingSystem": "Android",
+      "applicationCategory": "SecurityApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Aplicación gratuita y 100% privada para cortar llamadas spam en 0 repiques y bloquear SMS de estafas en Chile.",
+      "downloadUrl": "https://alakomax.github.io/SpamQuarantine/SpamQuarantine.apk"
+    }
+    </script>
+
     <style>
         :root {
             --bg-dark: #0B0F17;
@@ -179,10 +197,20 @@
             border-color: rgba(16, 185, 129, 0.3);
         }
 
-        /* Hero Section */
+        /* Hero Section Split Layout */
         .hero {
-            padding: 70px 0 50px;
-            text-align: center;
+            padding: 40px 0 30px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .hero-content {
+            text-align: left;
         }
 
         .hero-pill {
@@ -194,27 +222,99 @@
             color: var(--accent-gold);
             padding: 6px 18px;
             border-radius: 30px;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .hero h1 {
-            font-size: 48px;
+            font-size: 46px;
             font-weight: 900;
             line-height: 1.15;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             letter-spacing: -1px;
-            background: linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%);
+            color: #FFFFFF;
+        }
+
+        .highlight-green {
+            background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .hero p {
-            font-size: 19px;
+        .highlight-blue {
+            background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p.hero-sub {
+            font-size: 17px;
             color: var(--text-body);
-            max-width: 720px;
-            margin: 0 auto 36px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Micro Benefits Chips */
+        .hero-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border-card);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #F1F5F9;
+        }
+
+        .chip i {
+            font-size: 14px;
+        }
+
+        /* 3D Floating Hero Showcase */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-showcase-card {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-showcase-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(0.8deg); }
+        }
+
+        .btn-primary {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+            animation: pulse-glow 3s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.35); }
+            50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.65); }
         }
 
         /* CTA Action Area */
@@ -562,6 +662,30 @@
             display: none;
         }
 
+        @media (max-width: 992px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                text-align: center;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .hero-chips {
+                justify-content: center;
+            }
+
+            .cta-group {
+                justify-content: center;
+            }
+
+            .hero-showcase-card {
+                max-width: 380px;
+            }
+        }
+
         @media (max-width: 768px) {
             header {
                 padding: 12px 0;
@@ -682,25 +806,41 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section Split Layout -->
     <section class="hero">
-        <div class="container-hero">
-            <div class="hero-pill">
-                <i class="fa-solid fa-bolt"></i> Cortafuegos Anti-Spam de Alta Precisión
-            </div>
-            <h1>El Fin de las Llamadas Molestas y Estafas por SMS en Chile</h1>
-            <p>Bloquea automáticamente números de telemarketing a 0 repiques, aísla mensajes engañosos (TAG, Copec, Casinos) y genera pruebas probatorias auditadas para denuncias legales.</p>
+        <div class="container-wide">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-pill">
+                        <i class="fa-solid fa-bolt"></i> Cortafuegos Anti-Spam para Chile
+                    </div>
+                    <h1>El Fin de las <span class="highlight-green">Llamadas Spam</span> y <span class="highlight-blue">Estafas por SMS</span> en Chile</h1>
+                    <p class="hero-sub">Bloquea números no deseados a 0 repiques antes del primer timbre, aisla SMS engañosos (TAG, Copec, Casinos) y exporta pruebas probatorias auditadas.</p>
 
-            <div class="cta-group">
-                <a href="SpamQuarantine.apk" class="btn-primary" id="downloadBtn">
-                    <i class="fa-solid fa-download"></i>
-                    Descargar para Android (.APK)
-                </a>
-                <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=omargonzalez76@gmail.com&currency_code=USD" target="_blank" class="btn-coffee">
-                    <i class="fa-solid fa-mug-hot"></i> Invítame un café ☕
-                </a>
+                    <div class="hero-chips">
+                        <span class="chip"><i class="fa-solid fa-bell-slash" style="color: var(--accent-gold);"></i> 0 Repiques (Corte Total)</span>
+                        <span class="chip"><i class="fa-solid fa-comment-slash" style="color: var(--accent-blue);"></i> Filtro SMS (TAG / Copec / Casinos)</span>
+                        <span class="chip"><i class="fa-solid fa-file-shield" style="color: var(--accent-green);"></i> Informe Probatorio SERNAC</span>
+                    </div>
+
+                    <div class="cta-group">
+                        <a href="SpamQuarantine.apk" class="btn-primary" id="downloadBtn">
+                            <i class="fa-solid fa-download"></i>
+                            Descargar para Android (.APK)
+                        </a>
+                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=omargonzalez76@gmail.com&currency_code=USD" target="_blank" class="btn-coffee">
+                            <i class="fa-solid fa-mug-hot"></i> Invítame un café ☕
+                        </a>
+                    </div>
+                    <p class="cta-info"><i class="fa-solid fa-check-circle" style="color: var(--accent-green);"></i> Descarga directa en 1 clic • Versión v1.0.12 • Gratuita y sin anuncios</p>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="hero-showcase-card">
+                        <img src="hero_phone_shield.png" alt="SpamQuarantine App Interceptando Llamada Spam a 0 Repiques" fetchpriority="high">
+                    </div>
+                </div>
             </div>
-            <p class="cta-info"><i class="fa-solid fa-check-circle" style="color: var(--accent-green);"></i> Descarga directa en 1 clic • Versión v1.0.12 • Gratuita y sin anuncios</p>
         </div>
     </section>
 
