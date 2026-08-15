@@ -767,61 +767,126 @@
             }
         }
 
-        /* Installation Guide */
-        .guide-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 24px;
-            padding: 40px;
-            margin: 60px 0;
+        /* Section 6: Connected Installation Process Stepper */
+        .installation-section-stepper {
+            padding: 60px 0 70px;
+            margin: 30px 0;
         }
 
-        .guide-section h2 {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .installation-header-stepper {
+            text-align: center;
+            max-width: 680px;
+            margin: 0 auto 46px;
         }
 
-        .guide-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
+        .installation-header-stepper h2 {
+            font-size: 36px;
+            font-weight: 900;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            letter-spacing: -0.8px;
         }
 
-        .step-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-card);
-            border-radius: 16px;
-            padding: 20px;
+        .installation-header-stepper p {
+            font-size: 16px;
+            color: var(--text-body);
+        }
+
+        .stepper-container-desktop {
             position: relative;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
         }
 
-        .step-num {
-            width: 32px;
-            height: 32px;
-            background: var(--accent-blue);
-            color: #FFF;
+        /* Connecting Progress Line behind numbers */
+        .stepper-container-desktop::before {
+            content: '';
+            position: absolute;
+            top: 52px;
+            left: 12%;
+            right: 12%;
+            height: 3px;
+            background: linear-gradient(90deg, #10B981 0%, #3B82F6 50%, #24B3A8 100%);
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        .step-node-item {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 32px 18px 26px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+
+        .step-node-item:hover {
+            transform: translateY(-6px);
+            border-color: rgba(36, 179, 168, 0.35);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.55);
+        }
+
+        .step-badge-num {
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
+            background: linear-gradient(135deg, #1E56B3 0%, #24B3A8 100%);
+            color: #FFFFFF;
+            font-size: 20px;
+            font-weight: 900;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 0 20px rgba(36, 179, 168, 0.4);
+            margin-bottom: 20px;
+            border: 3px solid #0B0F17;
+        }
+
+        .step-title {
+            font-size: 18px;
             font-weight: 800;
-            font-size: 14px;
-            margin-bottom: 14px;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
         }
 
-        .step-card h4 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .step-card p {
-            font-size: 13px;
+        .step-desc {
+            font-size: 13.5px;
             color: var(--text-body);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 992px) {
+            .stepper-container-desktop {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 16px !important;
+            }
+            .stepper-container-desktop::before {
+                display: none !important;
+            }
+            .step-node-item {
+                padding: 24px 14px !important;
+                border-radius: 18px !important;
+            }
+            .step-title {
+                font-size: 16.5px !important;
+            }
+            .step-desc {
+                font-size: 12.5px !important;
+            }
+            .step-badge-num {
+                width: 44px !important;
+                height: 44px !important;
+                font-size: 17px !important;
+                margin-bottom: 14px !important;
+            }
         }
 
         /* FAQ Section */
@@ -1203,32 +1268,36 @@
             </div>
         </section>
 
-        <!-- Installation Guide -->
-        <section class="guide-section" id="guide">
-            <h2><i class="fa-solid fa-download" style="color: var(--accent-green);"></i> Pasos para Instalar en tu Celular Android</h2>
-            <div class="guide-steps">
-                <div class="step-card">
-                    <div class="step-num">1</div>
-                    <h4>Descargar APK</h4>
-                    <p>Haz clic en el botón verde de descarga directa en esta página.</p>
+        <!-- Section 6: Connected Installation Process Stepper -->
+        <section class="installation-section-stepper" id="guide">
+            <div class="installation-header-stepper">
+                <h2>Pasos para Instalar en tu Celular Android</h2>
+                <p>Instalación fácil y segura en menos de 1 minuto directamente en tu dispositivo.</p>
+            </div>
+
+            <div class="stepper-container-desktop">
+                <div class="step-node-item">
+                    <div class="step-badge-num">1</div>
+                    <div class="step-title">Descargar APK</div>
+                    <div class="step-desc">Haz clic en el botón de descarga directa en esta página.</div>
                 </div>
 
-                <div class="step-card">
-                    <div class="step-num">2</div>
-                    <h4>Confirmar Descarga</h4>
-                    <p>Si tu navegador avisa sobre *"archivos de origen desconocido"*, presiona "Descargar de todos modos".</p>
+                <div class="step-node-item">
+                    <div class="step-badge-num">2</div>
+                    <div class="step-title">Confirmar Descarga</div>
+                    <div class="step-desc">Si tu navegador consulta sobre archivos APK, presiona "Descargar de todos modos".</div>
                 </div>
 
-                <div class="step-card">
-                    <div class="step-num">3</div>
-                    <h4>Instalar el Archivo</h4>
-                    <p>Abre el archivo `SpamQuarantine.apk` desde la barra de notificaciones e instala.</p>
+                <div class="step-node-item">
+                    <div class="step-badge-num">3</div>
+                    <div class="step-title">Instalar el Archivo</div>
+                    <div class="step-desc">Abre el archivo SpamQuarantine.apk desde tu barra de notificaciones e instala.</div>
                 </div>
 
-                <div class="step-card">
-                    <div class="step-num">4</div>
-                    <h4>Activar Filtro</h4>
-                    <p>Abre SpamQuarantine y concede el permiso de filtro predeterminado.</p>
+                <div class="step-node-item">
+                    <div class="step-badge-num">4</div>
+                    <div class="step-title">Activar Filtro</div>
+                    <div class="step-desc">Abre SpamQuarantine y concede el permiso de filtro predeterminado.</div>
                 </div>
             </div>
         </section>
