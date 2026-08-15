@@ -195,112 +195,104 @@
             background: rgba(16, 185, 129, 0.12);
             color: var(--accent-green);
             border-color: rgba(16, 185, 129, 0.3);
-        }
-
-        /* Hero Section with User Banner Background */
+        }        /* Hero Section Full-Bleed Truecaller-Style */
         .hero {
-            padding: 30px 0 20px;
-        }
-
-        .hero-banner-card {
             position: relative;
             width: 100%;
-            border-radius: 24px;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 70px 24px;
+            background: #0B0F17 url('imagen_banner_principal.jpg') no-repeat center center / cover;
             overflow: hidden;
-            background: #0B0F17 url('banner_hero.png') no-repeat right center / cover;
-            border: 1px solid var(--border-card);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(16, 185, 129, 0.15);
         }
 
-        .hero-banner-overlay {
-            padding: 48px clamp(20px, 4vw, 48px);
-            background: linear-gradient(to right, #0B0F17 38%, rgba(11, 15, 23, 0.92) 58%, rgba(11, 15, 23, 0.35) 82%, transparent 100%);
-            min-height: 440px;
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(11, 15, 23, 0.72) 0%, rgba(11, 15, 23, 0.94) 85%);
+            z-index: 1;
+        }
+
+        .hero-container-minimal {
+            position: relative;
+            z-index: 2;
+            max-width: 840px;
+            margin: 0 auto;
             display: flex;
+            flex-direction: column;
             align-items: center;
         }
 
-        .hero-banner-content {
-            max-width: 620px;
-            text-align: left;
-        }
-
-        .hero-pill {
+        .hero-badge-minimal {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(245, 158, 11, 0.12);
-            border: 1px solid rgba(245, 158, 11, 0.35);
-            color: var(--accent-gold);
-            padding: 6px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+            padding: 8px 20px;
             border-radius: 30px;
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 20px;
+            backdrop-filter: blur(12px);
+            margin-bottom: 24px;
         }
 
-        .hero h1 {
-            font-size: 42px;
+        .hero h1.hero-title-minimal {
+            font-size: 52px;
             font-weight: 900;
             line-height: 1.15;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
             color: #FFFFFF;
+            margin-bottom: 20px;
+            letter-spacing: -1.5px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
         }
 
-        .highlight-green {
-            background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hero p.hero-sub-minimal {
+            font-size: 19px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 650px;
+            margin-bottom: 36px;
+            line-height: 1.5;
+            font-weight: 400;
         }
 
-        .highlight-blue {
-            background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p.hero-sub {
-            font-size: 16.5px;
-            color: var(--text-body);
-            line-height: 1.6;
-            margin-bottom: 22px;
-        }
-
-        /* Micro Benefits Chips */
-        .hero-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 28px;
-        }
-
-        .chip {
+        .btn-truecaller-style {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #F1F5F9;
-            backdrop-filter: blur(8px);
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #1E56B3 0%, #24B3A8 100%);
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: 800;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(30, 86, 179, 0.45), 0 0 25px rgba(36, 179, 168, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: -0.3px;
         }
 
-        .chip i {
+        .btn-truecaller-style:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(30, 86, 179, 0.65), 0 0 35px rgba(36, 179, 168, 0.5);
+        }
+
+        .hero-meta-minimal {
+            margin-top: 22px;
             font-size: 14px;
-        }
-
-        .btn-primary {
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
-            animation: pulse-glow 3s infinite;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.35); }
-            50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.65); }
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
         }
 
         /* CTA Action Area */
@@ -648,30 +640,6 @@
             display: none;
         }
 
-        @media (max-width: 992px) {
-            .hero-grid {
-                grid-template-columns: 1fr;
-                gap: 32px;
-                text-align: center;
-            }
-
-            .hero-content {
-                text-align: center;
-            }
-
-            .hero-chips {
-                justify-content: center;
-            }
-
-            .cta-group {
-                justify-content: center;
-            }
-
-            .hero-showcase-card {
-                max-width: 380px;
-            }
-        }
-
         @media (max-width: 768px) {
             header {
                 padding: 12px 0;
@@ -740,28 +708,36 @@
             }
 
             .hero {
-                padding: 32px 0 24px;
+                min-height: 75vh;
+                padding: 50px 16px 40px;
+                background: #0B0F17 url('banner_hero_mobile.png') no-repeat center top / cover;
             }
 
-            .hero h1 {
-                font-size: 26px !important;
-                line-height: 1.25;
+            .hero-overlay {
+                background: linear-gradient(to bottom, rgba(11, 15, 23, 0.45) 0%, rgba(11, 15, 23, 0.95) 75%);
             }
 
-            .hero p {
+            .hero h1.hero-title-minimal {
+                font-size: 32px !important;
+                line-height: 1.2;
+                margin-bottom: 14px;
+            }
+
+            .hero p.hero-sub-minimal {
                 font-size: 15px !important;
-                margin-bottom: 24px;
+                margin-bottom: 28px;
+            }
+
+            .btn-truecaller-style {
+                width: 100%;
+                font-size: 16.5px;
+                padding: 14px 24px;
             }
 
             .stats-bar {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
                 padding: 16px;
-            }
-
-            .btn-primary, .btn-coffee {
-                width: 100%;
-                justify-content: center;
             }
         }
     </style>
@@ -792,36 +768,24 @@
         </div>
     </header>
 
-    <!-- Hero Section with User Banner Background -->
+    <!-- Hero Section Full-Bleed Truecaller-Style -->
     <section class="hero">
-        <div class="container-wide">
-            <div class="hero-banner-card">
-                <div class="hero-banner-overlay">
-                    <div class="hero-banner-content">
-                        <div class="hero-pill">
-                            <i class="fa-solid fa-bolt"></i> Cortafuegos Anti-Spam para Chile
-                        </div>
-                        <h1>El Fin de las <span class="highlight-green">Llamadas Spam</span> y <span class="highlight-blue">Estafas por SMS</span> en Chile</h1>
-                        <p class="hero-sub">Bloquea números no deseados a 0 repiques antes del primer timbre, aísla mensajes engañosos (TAG, Copec, Casinos) y exporta pruebas probatorias auditadas.</p>
+        <div class="hero-overlay"></div>
+        <div class="hero-container-minimal">
+            <div class="hero-badge-minimal">
+                <i class="fa-solid fa-shield-halved" style="color: #24B3A8;"></i> Cortafuegos Anti-Spam #1 en Chile
+            </div>
 
-                        <div class="hero-chips">
-                            <span class="chip"><i class="fa-solid fa-bell-slash" style="color: var(--accent-gold);"></i> 0 Repiques (Corte Total)</span>
-                            <span class="chip"><i class="fa-solid fa-comment-slash" style="color: var(--accent-blue);"></i> Filtro SMS (TAG / Copec / Casinos)</span>
-                            <span class="chip"><i class="fa-solid fa-file-shield" style="color: var(--accent-green);"></i> Informe Probatorio SERNAC</span>
-                        </div>
+            <h1 class="hero-title-minimal">La mejor app para identificar y bloquear spam</h1>
 
-                        <div class="cta-group">
-                            <a href="SpamQuarantine.apk" class="btn-primary" id="downloadBtn">
-                                <i class="fa-solid fa-download"></i>
-                                Descargar para Android (.APK)
-                            </a>
-                            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=omargonzalez76@gmail.com&currency_code=USD" target="_blank" class="btn-coffee">
-                                <i class="fa-solid fa-mug-hot"></i> Invítame un café ☕
-                            </a>
-                        </div>
-                        <p class="cta-info"><i class="fa-solid fa-check-circle" style="color: var(--accent-green);"></i> Descarga directa en 1 clic • Versión v1.0.12 • Gratuita y sin anuncios</p>
-                    </div>
-                </div>
+            <p class="hero-sub-minimal">Corta llamadas molestas a 0 repiques antes del primer timbre, aísla SMS engañosos de TAG o bancos y genera pruebas probatorias auditadas para el SERNAC.</p>
+
+            <a href="SpamQuarantine.apk" class="btn-truecaller-style" id="downloadBtn">
+                <i class="fa-solid fa-download"></i> Descargar SpamQuarantine (.APK)
+            </a>
+
+            <div class="hero-meta-minimal">
+                <i class="fa-solid fa-check-circle" style="color: #24B3A8;"></i> Descarga directa en 1 clic • 100% Gratuita y Privada • 0 Anuncios
             </div>
         </div>
     </section>
