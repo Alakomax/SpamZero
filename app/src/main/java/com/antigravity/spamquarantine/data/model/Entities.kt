@@ -9,6 +9,8 @@ data class RuleEntity(
     val id: Long = 0,
     val pattern: String,
     val description: String,
+    val category: String = "Llamadas Nacionales",
+    val title: String = "",
     val isActive: Boolean = true,
     val createdAt: Long = System.currentTimeMillis()
 )

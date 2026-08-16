@@ -29,9 +29,16 @@ object SpamRuleCache {
                     val existingPatterns = existingRules.map { it.pattern }.toSet()
 
                     var insertedAny = false
-                    PhoneUtils.getDefaultChileSpamPatterns().forEach { (pattern, desc) ->
-                        if (!existingPatterns.contains(pattern)) {
-                            db.ruleDao().insertRule(RuleEntity(pattern = pattern, description = desc))
+                    PhoneUtils.getDefaultChileSpamRules().forEach { rule ->
+                        if (!existingPatterns.contains(rule.pattern)) {
+                            db.ruleDao().insertRule(
+                                RuleEntity(
+                                    pattern = rule.pattern,
+                                    title = rule.title,
+                                    category = rule.category,
+                                    description = rule.description
+                                )
+                            )
                             insertedAny = true
                         }
                     }
@@ -40,8 +47,13 @@ object SpamRuleCache {
                     cachedRules = rules
                     rules
                 } catch (e: Exception) {
-                    PhoneUtils.getDefaultChileSpamPatterns().map { (pattern, desc) ->
-                        RuleEntity(pattern = pattern, description = desc)
+                    PhoneUtils.getDefaultChileSpamRules().map { rule ->
+                        RuleEntity(
+                            pattern = rule.pattern,
+                            title = rule.title,
+                            category = rule.category,
+                            description = rule.description
+                        )
                     }.also { cachedRules = it }
                 }
             }
@@ -59,9 +71,16 @@ object SpamRuleCache {
                     val existingRules = db.ruleDao().getAllRules()
                     val existingPatterns = existingRules.map { it.pattern }.toSet()
 
-                    PhoneUtils.getDefaultChileSpamPatterns().forEach { (pattern, desc) ->
-                        if (!existingPatterns.contains(pattern)) {
-                            db.ruleDao().insertRule(RuleEntity(pattern = pattern, description = desc))
+                    PhoneUtils.getDefaultChileSpamRules().forEach { rule ->
+                        if (!existingPatterns.contains(rule.pattern)) {
+                            db.ruleDao().insertRule(
+                                RuleEntity(
+                                    pattern = rule.pattern,
+                                    title = rule.title,
+                                    category = rule.category,
+                                    description = rule.description
+                                )
+                            )
                         }
                     }
                     val rules = db.ruleDao().getAllRules()

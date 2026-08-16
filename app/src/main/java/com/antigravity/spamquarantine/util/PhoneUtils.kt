@@ -40,31 +40,109 @@ object PhoneUtils {
 
     /**
      * Verifica si un número formateado en E.164 o texto coincide con una expresión regular dada.
+     * Incluye Pattern.DOTALL para soportar la evaluación de mensajes SMS multilínea.
      */
     fun matchesRegexPattern(textOrNumber: String, regexPattern: String): Boolean {
         if (textOrNumber.isBlank() || regexPattern.isBlank()) return false
         return try {
-            val pattern = Pattern.compile(regexPattern, Pattern.CASE_INSENSITIVE)
+            val pattern = Pattern.compile(regexPattern, Pattern.CASE_INSENSITIVE or Pattern.DOTALL)
             pattern.matcher(textOrNumber).find()
         } catch (e: Exception) {
             false
         }
     }
 
+    data class DefaultRule(
+        val pattern: String,
+        val title: String,
+        val category: String,
+        val description: String
+    )
+
     /**
-     * Lista de patrones de expresiones regulares predeterminados para combatir el spam de llamadas y SMS en Chile.
+     * Lista de reglas predeterminadas organizadas por categoría y con explicaciones concisas.
+     */
+    fun getDefaultChileSpamRules(): List<DefaultRule> {
+        return listOf(
+            DefaultRule(
+                pattern = "^\\+56(600|800|809)\\d+",
+                title = "Líneas 600 / 800 y Cobro Revertido",
+                category = "📞 Llamadas Nacionales",
+                description = "Bloquea llamadas masivas de venta comercial y tarificación especial."
+            ),
+            DefaultRule(
+                pattern = "^\\+569(2882|4434|4433|4435)\\d{4}$",
+                title = "Bloque Móvil Call Centers",
+                category = "📞 Llamadas Nacionales",
+                description = "Intercepta bloques de celulares corporativos contratados por centrales de telemercadeo."
+            ),
+            DefaultRule(
+                pattern = "^\\+5680\\d+",
+                title = "Sistemas de Cobranza Automática",
+                category = "📞 Llamadas Nacionales",
+                description = "Bloquea números configurados por agencias de cobranza masiva."
+            ),
+            DefaultRule(
+                pattern = "^\\+5622\\d{7}$",
+                title = "Fijos de Telemarketing (Santiago)",
+                category = "📞 Llamadas Nacionales",
+                description = "Filtra llamadas de ventas no solicitadas desde números fijos de la RM."
+            ),
+            DefaultRule(
+                pattern = "^\\+56(44|43|42|45|41)\\d+",
+                title = "Centrales VoIP y Números Comerciales",
+                category = "📞 Llamadas Nacionales",
+                description = "Bloquea llamadas salientes desde centrales telefónicas virtuales masivas."
+            ),
+            DefaultRule(
+                pattern = "^\\+(?!56)\\d{8,}$",
+                title = "Remitentes Internacionales No Guardados",
+                category = "🌐 Spam e Internacionales",
+                description = "Bloquea SMS y llamadas entrantes de números extranjeros fuera de tu agenda."
+            ),
+            DefaultRule(
+                pattern = "^\\+?34931\\d+$",
+                title = "Troncales Robóticas España / VoIP",
+                category = "🌐 Spam e Internacionales",
+                description = "Filtra llamadas automatizadas y estafas desde centrales virtuales del exterior (+34 931)."
+            ),
+            DefaultRule(
+                pattern = "^44\\d+$",
+                title = "Troncales VoIP Estafas SMS",
+                category = "🌐 Spam e Internacionales",
+                description = "Intercepta números virtuales internacionales usados para envío masivo de spam."
+            ),
+            DefaultRule(
+                pattern = "(?i)(se han abonado|abonado.*pesos|compensacio?n|verifique su saldo|monto acreditado|transferencia recibida)",
+                title = "SMS de Falsos Depósitos y Compensaciones",
+                category = "📩 SMS y Estafas (Phishing)",
+                description = "Bloquea mensajes engañosos sobre abonos de dinero o devoluciones falsas."
+            ),
+            DefaultRule(
+                pattern = "(?i)(multa pendiente|aviso tag|copec|ultimo aviso|puntos disponibles|cuenta suspendida)",
+                title = "SMS de Falsas Multas, TAG y Cortes",
+                category = "📩 SMS y Estafas (Phishing)",
+                description = "Captura SMS de cobros urgentes ficticios sobre autopistas, multas y puntos."
+            ),
+            DefaultRule(
+                pattern = "(?i)(joker jewels|fortune (tiger|rabbit)|gates of olympus|7k|apuestas|ruleta|giros)",
+                title = "SMS de Casinos y Apuestas Online",
+                category = "📩 SMS y Estafas (Phishing)",
+                description = "Filtra publicidad no solicitada de tragamonedas y juegos de azar."
+            ),
+            DefaultRule(
+                pattern = "(?i)https?://(bit\\.ly|tinyurl\\.com|cutt\\.ly|is\\.gd|t\\.co|shorturl\\.at|([a-z0-9\\-]+\\.(xyz|top|site|club|ru|tk|online|fit|info|link|live|buzz)))",
+                title = "SMS con Enlaces Acortados (bit.ly)",
+                category = "📩 SMS y Estafas (Phishing)",
+                description = "Intercepta SMS con links acortados usados para robar claves o infectar el equipo."
+            )
+        )
+    }
+
+    /**
+     * Mantiene compatibilidad hacia atrás devolviendo la lista de patrones como Pares.
      */
     fun getDefaultChileSpamPatterns(): List<Pair<String, String>> {
-        return listOf(
-            Pair("^\\+56(600|800|809)\\d+", "Servicios Comerciales y Cobro Revertido (600 / 800 / 809)"),
-            Pair("^\\+569(2882|4434|4433|4435)\\d{4}$", "Bloque Móvil Call Center Chile (2882 / 4434 / 4433 / 4435)"),
-            Pair("^\\+5680\\d+", "Prefijos Especiales de Cobranza (80 XXX XXXX)"),
-            Pair("^\\+5622\\d{7}$", "Telemarketing Fijo Santiago (22 XXX XXXX)"),
-            Pair("^\\+56(44|43|42|45|41)\\d+", "Rango Números Comerciales (44 / 4X VoIP)"),
-            Pair("^\\+?34931\\d+$", "Spam Internacional España / Casino (+34 931)"),
-            Pair("^44\\d+$", "Troncales VoIP Estafas SMS (44 XXX XXXX)"),
-            Pair("(?i)(joker jewels|fortune (tiger|rabbit)|gates of olympus|7k|apuestas|ruleta|giros)", "Filtro SMS: Spam Casino / Apuestas"),
-            Pair("(?i)(multa pendiente|aviso tag|copec|ultimo aviso|puntos disponibles|abonado.*pesos)", "Filtro SMS: Estafas TAG / Copec / Bancos")
-        )
+        return getDefaultChileSpamRules().map { Pair(it.pattern, "${it.title}: ${it.description}") }
     }
 }

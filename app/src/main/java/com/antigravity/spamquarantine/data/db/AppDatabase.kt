@@ -62,7 +62,7 @@ interface SmsQuarantineDao {
 
 @Database(
     entities = [RuleEntity::class, QuarantineLogEntity::class, SmsQuarantineLogEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

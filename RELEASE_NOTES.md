@@ -2,6 +2,13 @@
 
 Haz clic en **`app-debug.apk`** para descargar e instalar la aplicación directamente en tu teléfono.
 
+#### 🚀 Novedades v1.0.13:
+
+* 📱 **Ícono Nativo Oficial de la App:** Actualización completa de todos los recursos gráficos nativos en Android (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi` y `ic_launcher_foreground.png`) incorporando el nuevo logo vectorial oficial (`SpamQuarantine_Logo.png`).
+* 📂 **Motor de Reglas Agrupado y Explicado:** Reorganización visual y lógica de todos los patrones de interceptación en **3 Categorías Claras**: *📞 Llamadas Nacionales*, *🌐 Spam e Internacionales*, y *📩 SMS y Estafas (Phishing)*. Cada regla ahora muestra un **Título Informativo** y una **Explicación Concisa** de su funcionamiento para fácil comprensión del usuario.
+* 🛡️ **Filtro Avanzado de SMS Phishing y URLs Acortadas:** Incorporación de nuevos motores de interceptación contra enlaces acortados sospechosos (`bit.ly`, `tinyurl`, `cutt.ly`), falsos depósitos/compensaciones bancarias y remitentes internacionales fuera de contactos.
+* ⚡ **Soporte Multilínea (`Pattern.DOTALL`):** Evaluación completa del cuerpo del SMS a través de saltos de línea para evitar evasiones de spam.
+
 #### 🚀 Novedades v1.0.12:
 
 * 🔄 **Auto-Sincronización de Reglas de SMS Spam:** Se resuelve el problema por el cual las instalaciones existentes no recibían los nuevos filtros de SMS (Casinos, TAG, Copec). Las reglas por defecto ahora se sincronizan automáticamente en la base de datos local sin afectar reglas personalizadas.
