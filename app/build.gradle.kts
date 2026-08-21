@@ -22,21 +22,23 @@ android {
     }
 
     signingConfigs {
-        create("customSigning") {
-            storeFile = file("app.keystore")
-            storePassword = "android"
-            keyAlias = "spamkey"
-            keyPassword = "android"
+        create("releaseSigning") {
+            storeFile = file("../release.jks")
+            storePassword = "SpamZero2026SecureKey!"
+            keyAlias = "spamzero"
+            keyPassword = "SpamZero2026SecureKey!"
+            enableV2Signing = true
+            enableV3Signing = true
         }
     }
 
     buildTypes {
         debug {
-            signingConfig = signingConfigs.getByName("customSigning")
+            signingConfig = signingConfigs.getByName("releaseSigning")
         }
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("customSigning")
+            signingConfig = signingConfigs.getByName("releaseSigning")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
