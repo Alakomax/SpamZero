@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine
+package com.alakomax.spamzero
 
 import android.app.role.RoleManager
 import android.content.Context
@@ -23,13 +23,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import com.antigravity.spamquarantine.ui.HomeScreen
-import com.antigravity.spamquarantine.ui.LegalScreen
-import com.antigravity.spamquarantine.ui.QuarantineScreen
-import com.antigravity.spamquarantine.ui.RulesScreen
-import com.antigravity.spamquarantine.ui.theme.SpamQuarantineTheme
-import com.antigravity.spamquarantine.util.CountryUtils
-import com.antigravity.spamquarantine.util.SpamRuleCache
+import com.alakomax.spamzero.ui.HomeScreen
+import com.alakomax.spamzero.ui.LegalScreen
+import com.alakomax.spamzero.ui.QuarantineScreen
+import com.alakomax.spamzero.ui.RulesScreen
+import com.alakomax.spamzero.ui.theme.SpamQuarantineTheme
+import com.alakomax.spamzero.util.CountryUtils
+import com.alakomax.spamzero.util.SpamRuleCache
 
 class MainActivity : ComponentActivity() {
 

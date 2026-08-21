@@ -1,8 +1,8 @@
-package com.antigravity.spamquarantine.util
+package com.alakomax.spamzero.util
 
 import android.content.Context
-import com.antigravity.spamquarantine.data.db.AppDatabase
-import com.antigravity.spamquarantine.data.model.RuleEntity
+import com.alakomax.spamzero.data.db.AppDatabase
+import com.alakomax.spamzero.data.model.RuleEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

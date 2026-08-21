@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine.receiver
+package com.alakomax.spamzero.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,12 +7,12 @@ import android.net.Uri
 import android.provider.ContactsContract
 import android.telephony.SmsMessage
 import android.util.Log
-import com.antigravity.spamquarantine.data.db.AppDatabase
-import com.antigravity.spamquarantine.data.model.SmsQuarantineLogEntity
-import com.antigravity.spamquarantine.util.CountryUtils
-import com.antigravity.spamquarantine.util.PhoneUtils
-import com.antigravity.spamquarantine.util.ProtectionPreferences
-import com.antigravity.spamquarantine.util.SpamRuleCache
+import com.alakomax.spamzero.data.db.AppDatabase
+import com.alakomax.spamzero.data.model.SmsQuarantineLogEntity
+import com.alakomax.spamzero.util.CountryUtils
+import com.alakomax.spamzero.util.PhoneUtils
+import com.alakomax.spamzero.util.ProtectionPreferences
+import com.alakomax.spamzero.util.SpamRuleCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

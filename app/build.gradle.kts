@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.antigravity.spamquarantine"
+    namespace = "com.alakomax.spamzero"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.antigravity.spamquarantine"
+        applicationId = "com.alakomax.spamzero"
         minSdk = 29
         targetSdk = 34
         versionCode = 14

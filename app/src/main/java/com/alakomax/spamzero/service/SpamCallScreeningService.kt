@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine.service
+package com.alakomax.spamzero.service
 
 import android.content.Context
 import android.net.Uri
@@ -7,13 +7,13 @@ import android.provider.ContactsContract
 import android.telecom.Call
 import android.telecom.CallScreeningService
 import android.util.Log
-import com.antigravity.spamquarantine.data.db.AppDatabase
-import com.antigravity.spamquarantine.data.model.QuarantineLogEntity
-import com.antigravity.spamquarantine.data.model.RuleEntity
-import com.antigravity.spamquarantine.util.CountryUtils
-import com.antigravity.spamquarantine.util.PhoneUtils
-import com.antigravity.spamquarantine.util.ProtectionPreferences
-import com.antigravity.spamquarantine.util.SpamRuleCache
+import com.alakomax.spamzero.data.db.AppDatabase
+import com.alakomax.spamzero.data.model.QuarantineLogEntity
+import com.alakomax.spamzero.data.model.RuleEntity
+import com.alakomax.spamzero.util.CountryUtils
+import com.alakomax.spamzero.util.PhoneUtils
+import com.alakomax.spamzero.util.ProtectionPreferences
+import com.alakomax.spamzero.util.SpamRuleCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine.ui
+package com.alakomax.spamzero.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,10 +19,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.antigravity.spamquarantine.data.db.AppDatabase
-import com.antigravity.spamquarantine.data.model.QuarantineLogEntity
-import com.antigravity.spamquarantine.data.model.SmsQuarantineLogEntity
-import com.antigravity.spamquarantine.util.QuarantineExporter
+import com.alakomax.spamzero.data.db.AppDatabase
+import com.alakomax.spamzero.data.model.QuarantineLogEntity
+import com.alakomax.spamzero.data.model.SmsQuarantineLogEntity
+import com.alakomax.spamzero.util.QuarantineExporter
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*

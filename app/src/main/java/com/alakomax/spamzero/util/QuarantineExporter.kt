@@ -1,10 +1,10 @@
-package com.antigravity.spamquarantine.util
+package com.alakomax.spamzero.util
 
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
-import com.antigravity.spamquarantine.data.model.QuarantineLogEntity
-import com.antigravity.spamquarantine.data.model.SmsQuarantineLogEntity
+import com.alakomax.spamzero.data.model.QuarantineLogEntity
+import com.alakomax.spamzero.data.model.SmsQuarantineLogEntity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*

@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine.ui.theme
+package com.alakomax.spamzero.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

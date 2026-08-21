@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine.util
+package com.alakomax.spamzero.util
 
 import java.util.regex.Pattern
 

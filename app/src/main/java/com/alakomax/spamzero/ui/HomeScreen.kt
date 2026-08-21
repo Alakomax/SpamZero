@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine.ui
+package com.alakomax.spamzero.ui
 
 import android.app.role.RoleManager
 import android.content.Context
@@ -21,10 +21,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.antigravity.spamquarantine.data.db.AppDatabase
-import com.antigravity.spamquarantine.util.ProtectionPreferences
-import com.antigravity.spamquarantine.util.UpdateInfo
-import com.antigravity.spamquarantine.util.UpdateManager
+import com.alakomax.spamzero.data.db.AppDatabase
+import com.alakomax.spamzero.util.ProtectionPreferences
+import com.alakomax.spamzero.util.UpdateInfo
+import com.alakomax.spamzero.util.UpdateManager
 import kotlinx.coroutines.launch
 
 @Composable

@@ -1,10 +1,10 @@
-package com.antigravity.spamquarantine.data.db
+package com.alakomax.spamzero.data.db
 
 import android.content.Context
 import androidx.room.*
-import com.antigravity.spamquarantine.data.model.QuarantineLogEntity
-import com.antigravity.spamquarantine.data.model.RuleEntity
-import com.antigravity.spamquarantine.data.model.SmsQuarantineLogEntity
+import com.alakomax.spamzero.data.model.QuarantineLogEntity
+import com.alakomax.spamzero.data.model.RuleEntity
+import com.alakomax.spamzero.data.model.SmsQuarantineLogEntity
 
 @Dao
 interface RuleDao {

@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine.data.model
+package com.alakomax.spamzero.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

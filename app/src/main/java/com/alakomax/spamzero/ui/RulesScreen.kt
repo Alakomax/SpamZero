@@ -1,4 +1,4 @@
-package com.antigravity.spamquarantine.ui
+package com.alakomax.spamzero.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,10 +19,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.antigravity.spamquarantine.data.db.AppDatabase
-import com.antigravity.spamquarantine.data.model.RuleEntity
-import com.antigravity.spamquarantine.util.CountryUtils
-import com.antigravity.spamquarantine.util.SpamRuleCache
+import com.alakomax.spamzero.data.db.AppDatabase
+import com.alakomax.spamzero.data.model.RuleEntity
+import com.alakomax.spamzero.util.CountryUtils
+import com.alakomax.spamzero.util.SpamRuleCache
 import kotlinx.coroutines.launch
 
 @Composable
