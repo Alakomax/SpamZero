@@ -12,8 +12,8 @@ android {
         applicationId = "com.antigravity.spamquarantine"
         minSdk = 29
         targetSdk = 34
-        versionCode = 13
-        versionName = "1.0.13"
+        versionCode = 14
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
