@@ -1,42 +1,28 @@
-# Términos y Condiciones de Uso de SpamQuarantine
+# Términos y Condiciones de Uso de SpamZero
 
-**Última actualización:** 11 de agosto de 2026
+**Última actualización:** 21 de agosto de 2026
 
 ## 1. Aceptación de los Términos
 
-Al descargar, instalar o utilizar la aplicación móvil **SpamQuarantine**, el usuario acepta cumplir y quedar obligado por los presentes Términos y Condiciones de Uso. Si el usuario no está de acuerdo con alguno de estos términos, debe abstenerse de utilizar la aplicación.
-
----
+Al descargar, instalar o utilizar la aplicación móvil **SpamZero**, el usuario acepta cumplir y quedar obligado por los presentes Términos y Condiciones de Uso. Si el usuario no está de acuerdo con alguno de estos términos, debe abstenerse de utilizar la aplicación.
 
 ## 2. Descripción del Servicio
 
-SpamQuarantine es una herramienta de software nativo para dispositivos Android diseñada para interceptar y rechazar llamadas telefónicas entrantes identificadas como spam o telemarketing mediante el uso de expresiones regulares (Regex) de patrones numéricos y listas de contactos locales.
+SpamZero es una herramienta de software nativo para dispositivos Android diseñada para interceptar y rechazar llamadas telefónicas entrantes y SMS identificados como spam o telemarketing mediante el uso de expresiones regulares (Regex) de patrones numéricos y listas de contactos locales.
 
----
+## 3. Carácter del Software y Responsabilidad
 
-## 3. Configuración y Responsabilidad del Usuario
+1. **Servicio Local sin Garantía de Interceptación 100%:** Las expresiones regulares preconfiguradas abarcan los patrones conocidos de spam en LATAM. No obstante, dada la naturaleza dinámica del spam telefónico, no se garantiza el bloqueo del 100% de las llamadas o mensajes no deseados.
+2. **Exención de Responsabilidad por Llamadas Legítimas:** El usuario es responsable de verificar las reglas Regex activas. El desarrollador no asume responsabilidad por llamadas o mensajes legítimos que puedan ser interceptados si coinciden con patrones de bloqueo globales o configurados manualmente por el usuario.
+3. **Uso de Permisos del Sistema:** El usuario otorga a la aplicación el permiso para actuar como filtro de llamadas predeterminado en Android (`RoleManager.ROLE_CALL_SCREENING`).
 
-1. **Gestión de Reglas:** El usuario tiene pleno control para agregar, modificar o desactivar las reglas de bloqueo Regex dentro de la aplicación.
-2. **Responsabilidad por Reglas Personalizadas:** El usuario es el único responsable de los patrones Regex que configure manualmente. El uso de patrones excesivamente amplios (por ejemplo, `.*` o `^\+56\d+$`) puede ocasionar el rechazo no deseado de llamadas legítimas (*falsos positivos*).
+## 4. Derechos de Autor y Propiedad Intelectual
 
----
+SpamZero es un proyecto de **código fuente visible** (*Source-Available*). El código se publica en GitHub exclusivamente para auditoría técnica, seguridad y verificación de privacidad. 
 
-## 4. Deslinde y Limitación de Responsabilidad (*Disclaimer*)
+* **Copyright (c) 2026 Alakomax / Omar González. Reservados todos los derechos.**
+* Queda estrictamente prohibida la reproducción, distribución, modificación con fines comerciales, o publicación de copias derivadas de esta aplicación en tiendas de aplicaciones o plataformas de distribución masiva sin la autorización previa por escrito del autor.
 
-1. **Uso "Tal Cual" (*As Is*):** La aplicación se entrega "tal cual" y "según disponibilidad", sin garantías de ningún tipo, expresas o implícitas.
-2. **Efectividad del Filtrado:** Aunque la aplicación incluye reglas predeterminadas optimizadas para números de telemarketing en Chile (prefijos `600`, `800`, `809`, etc.), el desarrollador **no garantiza la interceptación del 100% de las llamadas spam**, ni se responsabiliza si spammers utilizan números dinámicos o no cubiertos por los patrones activos.
-3. **Exención de Daños:** El desarrollador no será responsable por ningún daño directo, indirecto, incidental o consecuente derivado del uso o la imposibilidad de uso de la aplicación, incluyendo la pérdida o rechazo involuntario de llamadas telefónicas.
+## 5. Modificaciones de los Términos
 
----
-
-## 5. Licencia de Software y Propiedad Intelectual
-
-SpamQuarantine es un proyecto de **código fuente visible** (*Source-Available*). El código se publica en GitHub exclusivamente para auditoría técnica, seguridad y verificación de privacidad. 
-
-Todos los derechos de autor están reservados (Copyright © 2026 Alakomax / Omar González). Queda estrictamente prohibida la copia, modificación con fines redistributivos, publicación en tiendas de aplicaciones o cualquier explotación comercial de esta obra sin la autorización previa por escrito del autor.
-
----
-
-## 6. Modificaciones de los Términos
-
-El desarrollador se reserva el derecho de actualizar estos Términos y Condiciones en cualquier momento. Las modificaciones entrarán en vigor a partir de su publicación en el repositorio oficial de GitHub del proyecto.
+El desarrollador se reserva el derecho de actualizar o modificar estos Términos y Condiciones en cualquier momento. Dichas modificaciones entrarán en vigor a partir de su publicación en el repositorio oficial de GitHub.

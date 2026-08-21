@@ -9,6 +9,7 @@ import android.telephony.SmsMessage
 import android.util.Log
 import com.antigravity.spamquarantine.data.db.AppDatabase
 import com.antigravity.spamquarantine.data.model.SmsQuarantineLogEntity
+import com.antigravity.spamquarantine.util.CountryUtils
 import com.antigravity.spamquarantine.util.PhoneUtils
 import com.antigravity.spamquarantine.util.ProtectionPreferences
 import com.antigravity.spamquarantine.util.SpamRuleCache
@@ -55,22 +56,28 @@ class SmsSpamReceiver : BroadcastReceiver() {
 
         if (senderNumber.isBlank() || fullBody.isBlank()) return
 
-        val normalizedSender = PhoneUtils.normalizeChilePhoneNumber(senderNumber)
-        Log.d("SmsSpamReceiver", "SMS entrante de: $senderNumber (E164: $normalizedSender) | Texto: $fullBody")
+        val countryInfo = CountryUtils.getSimCountryInfo(context.applicationContext)
+        val normalizedSender = PhoneUtils.normalizePhoneNumber(senderNumber, countryInfo.code)
+        Log.d("SmsSpamReceiver", "SMS entrante [${countryInfo.code} ${countryInfo.flagEmoji}] de: $senderNumber (Norm: $normalizedSender) | Texto: $fullBody")
 
-        // 1. Verificar si el remitente está en la agenda de contactos (Lista Blanca automática)
+        // 1. Lista Blanca Automática: Verificar si el remitente está en la agenda de contactos
         if (isContact(context, senderNumber) || isContact(context, normalizedSender)) {
-            Log.d("SmsSpamReceiver", "Remitente $normalizedSender está en contactos. Permitido.")
+            Log.d("SmsSpamReceiver", "Remitente $normalizedSender está en Contactos. SMS permitido.")
             return
         }
 
-        // 2. Evaluar reglas activas contra el número de teléfono y el contenido del texto
+        // 2. Evaluamos reglas activas en RAM contra el remitente (con sanitización) y el cuerpo del texto
         val activeRules = SpamRuleCache.getActiveRulesSync(context.applicationContext)
+
+        val sanitizedSender = senderNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
+        val sanitizedNorm = normalizedSender.replace(Regex("[\\s\\-\\(\\)]"), "")
 
         var matchedRulePattern: String? = null
         for (rule in activeRules) {
             if (PhoneUtils.matchesRegexPattern(normalizedSender, rule.pattern) ||
                 PhoneUtils.matchesRegexPattern(senderNumber, rule.pattern) ||
+                PhoneUtils.matchesRegexPattern(sanitizedNorm, rule.pattern) ||
+                PhoneUtils.matchesRegexPattern(sanitizedSender, rule.pattern) ||
                 PhoneUtils.matchesRegexPattern(fullBody, rule.pattern)) {
                 matchedRulePattern = rule.pattern
                 break
@@ -79,6 +86,13 @@ class SmsSpamReceiver : BroadcastReceiver() {
 
         if (matchedRulePattern != null) {
             Log.w("SmsSpamReceiver", "SMS SPAM DETECTADO de $normalizedSender por patrón $matchedRulePattern")
+
+            // Intentar cancelar propagación de la notificación del SMS
+            try {
+                abortBroadcast()
+            } catch (e: Exception) {
+                Log.d("SmsSpamReceiver", "abortBroadcast no soportado en esta versión de Android/App: ${e.message}")
+            }
 
             receiverScope.launch {
                 try {

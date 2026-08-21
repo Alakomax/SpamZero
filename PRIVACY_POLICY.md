@@ -1,58 +1,45 @@
-# Política de Privacidad de SpamQuarantine
+# Política de Privacidad de SpamZero
 
-**Última actualización:** 11 de agosto de 2026
+**Última actualización:** 21 de agosto de 2026
 
-## 1. Declaración Fundamental de Privacidad
+## 1. Compromiso de Privacidad
 
-**SpamQuarantine** es una aplicación móvil nativa diseñada bajo el principio de **Privacidad por Diseño** (*Privacy by Design*). 
+**SpamZero** es una aplicación móvil nativa diseñada bajo el principio de **Privacidad por Diseño** (*Privacy by Design*). Nuestra arquitectura garantiza que **ningún dato personal, número telefónico, registro de llamadas ni mensaje SMS abandone jamás tu dispositivo**. 
 
-- **0 Servidores Externos:** La aplicación NO posee servidores propios, NO transmite datos a la nube y NO envía información a terceros.
-- **0 Analíticas y Rastreadores:** La aplicación NO utiliza cookies, SDKs de publicidad, herramientas de rastreo (*trackers*), ni servicios de analítica o telemetría.
-- **Procesamiento 100% Local:** Toda la interceptación de llamadas, normalización de números telefónicos y gestión de reglas Regex se ejecuta de forma síncrona y local en el procesador del dispositivo móvil del usuario.
+SpamZero opera de manera **100% offline y local** en la memoria del procesador de tu teléfono.
 
----
+## 2. Información que NO recopilamos
 
-## 2. Marco Legal Aplicable
+* **No recopilamos datos personales:** No requerimos creación de cuenta, registro de correo electrónico ni identificación personal.
+* **No registramos llamadas ni mensajes en servidores:** El historial de cuarentena se guarda en una base de datos local protegida (`SQLite / Room`) dentro de la memoria interna del teléfono.
+* **Sin servidores ni telemetría:** SpamZero no posee servidores externos ni envía analíticas de uso, datos de ubicación o hábitos de navegación.
 
-Esta política se redacta en conformidad con la **Ley N° 19.628 sobre Protección de la Vida Privada (Chile)** y los estándares internacionales de protección de datos personales.
+## 3. Uso de Permisos del Dispositivo
 
----
+Para cumplir con su función principal de interceptación previa al timbre de llamadas no deseadas, SpamZero solicita los siguientes permisos nativos de Android:
 
-## 3. Justificación y Uso de Permisos del Dispositivo
+* `android.permission.READ_PHONE_STATE`: Necesario para detectar el evento de llamada entrante.
+* `android.permission.READ_CALL_LOG`: Requerido por el servicio nativo `CallScreeningService` para identificar el número entrante y aplicar el bloqueo previo al timbre.
+* `android.permission.READ_CONTACTS`: Utilizado exclusivamente para consultar la agenda de contactos del dispositivo como **Lista Blanca Automática**. Si un número está en tus contactos, el filtro lo permite siempre. Tu agenda jamás se envía a ningún destino externo.
+* `android.permission.RECEIVE_SMS`: Utilizado exclusivamente para analizar en tiempo real el texto del SMS entrante contra patrones Regex de estafas, casinos y phishing.
 
-Para cumplir con su función principal de interceptación previa al timbre de llamadas no deseadas, SpamQuarantine solicita los siguientes permisos nativos de Android:
+## 4. Almacenamiento y Seguridad de Datos
 
-| Permiso Android | Propósito Exclusivo | Uso de Datos |
-| :--- | :--- | :--- |
-| `CallScreeningService` (`BIND_SCREENING_SERVICE`) | Interceptar la llamada entrante antes de que suene el primer repique. | Evaluado localmente en milisegundos contra los patrones Regex. No se transmite ningún número a redes externas. |
-| `READ_CONTACTS` | Permitir la función de **Lista Blanca Automática**. | Consulta local directa en la agenda del dispositivo. Las llamadas de contactos guardados son aprobadas inmediatamente. **La agenda NUNCA se copia, sube ni comparte.** |
-| `READ_CALL_LOG` / `READ_PHONE_STATE` | Permitir la auditoría local del registro de llamadas rechazadas. | Almacenado de forma cifrada/privada en la base de datos local del teléfono (`Room DB`). |
+1. **Almacenamiento Local:** Todos los logs de llamadas y SMS bloqueados se guardan en el almacenamiento privado de la aplicación.
+2. **Control del Usuario:** El usuario puede vaciar el historial de cuarentena en cualquier momento desde la interfaz.
+3. **Eliminación Definitiva:** Al desinstalar SpamZero, el sistema operativo Android elimina automáticamente toda la base de datos y preferencias locales asociadas a la app.
 
----
+## 5. Cookies y Rastreadores
 
-## 4. Almacenamiento y Control de Datos
+1. **Cookies:** SpamZero es una aplicación nativa pura desarrollada en Kotlin/AndroidX. No se emplean cookies de navegación, rastreadores web ni tecnologías de almacenamiento de sesión HTTP.
+2. **Publicidad:** La aplicación es 100% libre de anuncios, banners publicitarios o SDKs de monetización de terceros.
 
-1. **Base de Datos de Cuarentena:** Los registros de llamadas bloqueadas (número telefónico, fecha, hora y regla coincidente) se guardan únicamente en la base de datos SQLite/Room del dispositivo.
-2. **Control Total del Usuario:** El usuario puede eliminar registros individuales de cuarentena o vaciar el historial completo en cualquier momento utilizando el botón "Limpiar Todo" dentro de la aplicación.
-3. **Eliminación Definitiva:** Al desinstalar SpamQuarantine, el sistema operativo Android elimina automáticamente toda la base de datos y preferencias locales asociadas a la app.
+## 6. Cumplimiento Normativo
 
----
+Esta Política de Privacidad cumple con las directrices de la **Ley N° 19.628 de Protección de la Vida Privada** en Chile y las normativas de protección de datos personales internacionales aplicables a software móvil.
 
-## 5. Ausencia de Cookies y Donaciones Voluntarias
+## 7. Contacto y Auditoría del Código
 
-1. **Cookies:** SpamQuarantine es una aplicación nativa pura desarrollada en Kotlin/AndroidX. No se emplean cookies de navegación, rastreadores web ni tecnologías de almacenamiento de sesión HTTP.
-2. **Donaciones Voluntarias:** La opción "Invítame un café ☕" es 100% voluntaria y redirige de forma externa a PayPal (`omargonzalez76@gmail.com`). La aplicación no almacena ni procesa datos bancarios o financieros del usuario.
+Al ser un proyecto de código fuente visible, cualquier usuario o auditor de seguridad puede verificar la integridad del código en nuestro repositorio oficial de GitHub:
 
----
-
-## 6. Cambios en esta Política
-
-Cualquier actualización a esta política será documentada en el repositorio oficial de GitHub del proyecto. Dado que la aplicación no recopila correos ni canales de comunicación de los usuarios, las modificaciones se reflejarán mediante las notas de versión (*Release Notes*).
-
----
-
-## 7. Contacto y Transparencia
-
-Si tiene dudas sobre el funcionamiento técnico o la privacidad de la aplicación, puede revisar directamente el código fuente público del proyecto en:
-[https://github.com/Alakomax/SpamQuarantine](https://github.com/Alakomax/SpamQuarantine)
-
+[https://github.com/Alakomax/SpamZero](https://github.com/Alakomax/SpamZero)

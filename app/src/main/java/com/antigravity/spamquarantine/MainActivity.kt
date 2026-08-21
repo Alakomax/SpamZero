@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -29,6 +28,8 @@ import com.antigravity.spamquarantine.ui.LegalScreen
 import com.antigravity.spamquarantine.ui.QuarantineScreen
 import com.antigravity.spamquarantine.ui.RulesScreen
 import com.antigravity.spamquarantine.ui.theme.SpamQuarantineTheme
+import com.antigravity.spamquarantine.util.CountryUtils
+import com.antigravity.spamquarantine.util.SpamRuleCache
 
 class MainActivity : ComponentActivity() {
 
@@ -45,8 +46,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Pre-calentar el caché de reglas en RAM en segundo plano
+        SpamRuleCache.prewarmCacheAsync(applicationContext)
+
         val prefs = getSharedPreferences("app_settings", MODE_PRIVATE)
-        val defaultDark = prefs.getBoolean("is_dark_mode", true) // Modo oscuro por defecto
+        val defaultDark = prefs.getBoolean("is_dark_mode", true)
 
         setContent {
             var isDarkMode by remember { mutableStateOf(defaultDark) }
@@ -88,13 +92,15 @@ fun MainAppStructure(
     onRequestRole: () -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(0) }
+    val context = LocalContext.current
+    val countryInfo = remember { CountryUtils.getSimCountryInfo(context) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "SpamQuarantine",
+                        text = "SpamZero ${countryInfo.flagEmoji}",
                         fontWeight = FontWeight.Bold
                     )
                 },

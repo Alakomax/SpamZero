@@ -26,7 +26,7 @@ object QuarantineExporter {
         val sb = StringBuilder()
         sb.appendLine("====================================================================")
         sb.appendLine("INFORME DE EVIDENCIA AUDITADA DE SPAM Y ACOSO TELEFÓNICO")
-        sb.appendLine("Generado por SpamQuarantine | Dispositivo Android Nativo")
+        sb.appendLine("Generado por SpamZero | Dispositivo Android Nativo")
         sb.appendLine("Fecha de Emisión: ${dateFormat.format(Date())}")
         sb.appendLine("====================================================================")
         sb.appendLine()
@@ -72,7 +72,7 @@ object QuarantineExporter {
 
         sb.appendLine()
         sb.appendLine("====================================================================")
-        sb.appendLine("FIN DEL INFORME AUDITABLE - SPAMQUARANTINE")
+        sb.appendLine("FIN DEL INFORME AUDITABLE - SPAMZERO")
         sb.appendLine("====================================================================")
 
         val exportDir = File(context.cacheDir, "exports")
@@ -80,7 +80,7 @@ object QuarantineExporter {
             exportDir.mkdirs()
         }
 
-        val file = File(exportDir, "Evidencia_SpamQuarantine_$dateFileName.txt")
+        val file = File(exportDir, "Evidencia_SpamZero_$dateFileName.txt")
         file.writeText(sb.toString())
 
         val uri = FileProvider.getUriForFile(
@@ -91,8 +91,8 @@ object QuarantineExporter {
 
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "Informe Auditado de Evidencia - SpamQuarantine")
-            putExtra(Intent.EXTRA_TEXT, "Adjunto informe probatorio de registros de spam y acoso telefónico generado por SpamQuarantine.")
+            putExtra(Intent.EXTRA_SUBJECT, "Informe Auditado de Evidencia - SpamZero")
+            putExtra(Intent.EXTRA_TEXT, "Adjunto informe probatorio de registros de spam y acoso telefónico generado por SpamZero.")
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }

@@ -10,6 +10,7 @@ import android.util.Log
 import com.antigravity.spamquarantine.data.db.AppDatabase
 import com.antigravity.spamquarantine.data.model.QuarantineLogEntity
 import com.antigravity.spamquarantine.data.model.RuleEntity
+import com.antigravity.spamquarantine.util.CountryUtils
 import com.antigravity.spamquarantine.util.PhoneUtils
 import com.antigravity.spamquarantine.util.ProtectionPreferences
 import com.antigravity.spamquarantine.util.SpamRuleCache
@@ -30,46 +31,56 @@ class SpamCallScreeningService : CallScreeningService() {
             return
         }
 
-        // Verificar si la protección está pausada/desactivada por el usuario
+        // Verificar si la protección está activada por el usuario
         if (!ProtectionPreferences.isProtectionEnabled(applicationContext)) {
             Log.d("SpamScreening", "Protección deshabilitada por el usuario. Llamada permitida: $rawNumber")
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
 
-        val normalizedNumber = PhoneUtils.normalizeChilePhoneNumber(rawNumber)
-        Log.d("SpamScreening", "Llamada entrante evaluada: Raw=$rawNumber -> E.164=$normalizedNumber")
+        val countryInfo = CountryUtils.getSimCountryInfo(applicationContext)
+        val normalizedNumber = PhoneUtils.normalizePhoneNumber(rawNumber, countryInfo.code)
+        Log.d("SpamScreening", "Llamada entrante evaluada [${countryInfo.code} ${countryInfo.flagEmoji}]: Raw=$rawNumber -> E.164=$normalizedNumber")
 
-        // 1. Verificar si el número está en la agenda de contactos (Lista Blanca automática)
+        // 1. Lista Blanca Automática: Verificar si está en Contactos del dispositivo
         if (isContact(this, rawNumber) || isContact(this, normalizedNumber)) {
             Log.d("SpamScreening", "Número $normalizedNumber está en Contactos. Permitido.")
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
 
-        // 2. Obtener reglas activas en memoria de forma síncrona (sub-milisegundos)
+        // 2. Obtener reglas activas en RAM de forma ultrarrápida
         val activeRules = SpamRuleCache.getActiveRulesSync(applicationContext)
+
+        val sanitizedRaw = rawNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
+        val sanitizedNorm = normalizedNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
 
         var matchedRule: RuleEntity? = null
         for (rule in activeRules) {
             if (PhoneUtils.matchesRegexPattern(normalizedNumber, rule.pattern) ||
-                PhoneUtils.matchesRegexPattern(rawNumber, rule.pattern)) {
+                PhoneUtils.matchesRegexPattern(rawNumber, rule.pattern) ||
+                PhoneUtils.matchesRegexPattern(sanitizedNorm, rule.pattern) ||
+                PhoneUtils.matchesRegexPattern(sanitizedRaw, rule.pattern)) {
                 matchedRule = rule
                 break
             }
         }
 
         if (matchedRule != null) {
-            Log.w("SpamScreening", "LLAMADA SPAM DETECTADA Y BLOQUEADA: $normalizedNumber por patrón ${matchedRule.pattern}")
+            Log.w("SpamScreening", "LLAMADA SPAM BLOQUEADA (0 REPIQUES): $normalizedNumber por patrón ${matchedRule.pattern}")
 
-            // Responder a Android INMEDIATAMENTE: Cortar llamada antes de sonar (0 repiques)
+            // Responder a Android Telecom INMEDIATAMENTE: Silenciar ringer y cortar llamada (0 repiques)
             val responseBuilder = CallResponse.Builder()
-                .setDisallowCall(true)  // Bloquear
-                .setRejectCall(true)    // Rechazar llamada
+                .setDisallowCall(true)  // Bloquear llamada
+                .setRejectCall(true)    // Rechazar/cortar línea
                 .setSkipCallLog(false)  // Conservar en log para auditoría
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                responseBuilder.setSilenceCall(true) // Silenciar timbre al instante (0 repiques)
+            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                responseBuilder.setSkipNotification(true)
+                responseBuilder.setSkipNotification(true) // Ocultar notificación emergente
             }
 
             respondToCall(callDetails, responseBuilder.build())
@@ -87,18 +98,15 @@ class SpamCallScreeningService : CallScreeningService() {
                         )
                     )
                 } catch (e: Exception) {
-                    Log.e("SpamScreening", "Error registrando en Cuarentena: ${e.message}")
+                    Log.e("SpamScreening", "Error registrando llamada en Cuarentena: ${e.message}")
                 }
             }
         } else {
-            Log.d("SpamScreening", "Llamada $normalizedNumber no coincide con ningún patrón de spam. Permitido.")
+            Log.d("SpamScreening", "Llamada $normalizedNumber permitida (sin coincidencia de spam).")
             respondToCall(callDetails, CallResponse.Builder().build())
         }
     }
 
-    /**
-     * Revisa si el número de teléfono existe en los contactos locales del dispositivo.
-     */
     private fun isContact(context: Context, number: String): Boolean {
         if (number.isBlank()) return false
         return try {

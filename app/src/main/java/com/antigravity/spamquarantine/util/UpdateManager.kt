@@ -25,7 +25,7 @@ data class UpdateInfo(
 
 object UpdateManager {
 
-    private const val GITHUB_RELEASES_API = "https://api.github.com/repos/Alakomax/SpamQuarantine/releases/latest"
+    private const val GITHUB_RELEASES_API = "https://api.github.com/repos/Alakomax/SpamZero/releases/latest"
 
     /**
      * Consulta la API de GitHub para verificar si existe una nueva versión lanzada.
@@ -60,7 +60,7 @@ object UpdateManager {
                 }
 
                 if (apkDownloadUrl.isBlank() && tagName.isNotBlank()) {
-                    apkDownloadUrl = "https://github.com/Alakomax/SpamQuarantine/releases/download/$tagName/app-debug.apk"
+                    apkDownloadUrl = "https://github.com/Alakomax/SpamZero/releases/download/$tagName/app-debug.apk"
                 }
 
                 val cleanLatest = tagName.removePrefix("v").trim()
@@ -93,7 +93,7 @@ object UpdateManager {
         try {
             val destinationFile = File(
                 context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
-                "SpamQuarantine_Update.apk"
+                "SpamZero_Update.apk"
             )
 
             if (destinationFile.exists()) {

@@ -3,13 +3,30 @@ package com.antigravity.spamquarantine.util
 import android.content.Context
 import com.antigravity.spamquarantine.data.db.AppDatabase
 import com.antigravity.spamquarantine.data.model.RuleEntity
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 object SpamRuleCache {
 
     @Volatile
     private var cachedRules: List<RuleEntity>? = null
+
+    private val cacheScope = CoroutineScope(Dispatchers.IO)
+
+    /**
+     * Pre-calienta el caché de reglas en la memoria RAM en segundo plano sin bloquear la UI ni llamadas entrantes.
+     */
+    fun prewarmCacheAsync(context: Context) {
+        cacheScope.launch {
+            try {
+                getActiveRulesSync(context.applicationContext)
+            } catch (e: Exception) {
+                // Silencioso
+            }
+        }
+    }
 
     /**
      * Obtiene la lista de reglas activas en memoria de manera ultra-rápida y síncrona.
@@ -28,8 +45,11 @@ object SpamRuleCache {
                     val existingRules = db.ruleDao().getAllRules()
                     val existingPatterns = existingRules.map { it.pattern }.toSet()
 
+                    val countryInfo = CountryUtils.getSimCountryInfo(context.applicationContext)
+                    val defaultRules = PhoneUtils.getDefaultSpamRules(countryInfo.code)
+
                     var insertedAny = false
-                    PhoneUtils.getDefaultChileSpamRules().forEach { rule ->
+                    defaultRules.forEach { rule ->
                         if (!existingPatterns.contains(rule.pattern)) {
                             db.ruleDao().insertRule(
                                 RuleEntity(
@@ -47,7 +67,8 @@ object SpamRuleCache {
                     cachedRules = rules
                     rules
                 } catch (e: Exception) {
-                    PhoneUtils.getDefaultChileSpamRules().map { rule ->
+                    val countryInfo = CountryUtils.getSimCountryInfo(context.applicationContext)
+                    PhoneUtils.getDefaultSpamRules(countryInfo.code).map { rule ->
                         RuleEntity(
                             pattern = rule.pattern,
                             title = rule.title,
@@ -61,17 +82,18 @@ object SpamRuleCache {
     }
 
     /**
-     * Fuerza la restauración/reinicio de todas las reglas por defecto en la base de datos.
+     * Sincroniza/restaura las reglas por defecto para un país específico o el de la SIM.
      */
-    fun restoreDefaultRulesSync(context: Context): List<RuleEntity> {
+    fun restoreDefaultRulesSync(context: Context, countryCode: String? = null): List<RuleEntity> {
         return synchronized(this) {
             runBlocking(Dispatchers.IO) {
                 try {
+                    val targetCountryIso = countryCode ?: CountryUtils.getSimCountryInfo(context.applicationContext).code
                     val db = AppDatabase.getDatabase(context.applicationContext)
                     val existingRules = db.ruleDao().getAllRules()
                     val existingPatterns = existingRules.map { it.pattern }.toSet()
 
-                    PhoneUtils.getDefaultChileSpamRules().forEach { rule ->
+                    PhoneUtils.getDefaultSpamRules(targetCountryIso).forEach { rule ->
                         if (!existingPatterns.contains(rule.pattern)) {
                             db.ruleDao().insertRule(
                                 RuleEntity(
@@ -92,7 +114,6 @@ object SpamRuleCache {
             }
         }
     }
-
 
     /**
      * Invalida el caché en memoria para que se recargue la próxima vez desde la BD.

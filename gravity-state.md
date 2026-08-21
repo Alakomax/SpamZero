@@ -2,6 +2,7 @@
 - Objetivo Activo: Lanzamiento de versión v1.0.13 con reglas categorizadas, soporte multilínea Pattern.DOTALL, nuevos motores de SMS phishing (URLs acortadas, abonos falsos, remitentes internacionales) y actualización de íconos nativos Android (`mipmap-*`).
 - Última Acción: Implementación en código Kotlin (`Entities.kt`, `AppDatabase.kt`, `PhoneUtils.kt`, `SpamRuleCache.kt`, `RulesScreen.kt`), generación de todos los assets nativos de ícono Android a partir de `logo/SpamQuarantine_Logo.png` y actualización de `RELEASE_NOTES.md`.
 - Decisiones/Bloqueos: Reglas organizadas en 3 categorías (*📞 Llamadas Nacionales*, *🌐 Spam e Internacionales*, *📩 SMS y Estafas (Phishing)*) con títulos y explicaciones concisas para el usuario.
+- Vínculo Marketing: `d:\Suma_Proyectos\Proyectos\.marketing\SpamQuarantine` (Estrategia RRSS y Guiones).
 - Siguiente Paso: Probar el build de la app, realizar commit / tag v1.0.13 y posterior integración de RRSS en la landing page.
 
 ## Historial Reciente

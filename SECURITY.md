@@ -1,21 +1,17 @@
-# Política de Seguridad y Reporte de Vulnerabilidades
+# Política de Seguridad de SpamZero
 
-## 1. Compromiso de Seguridad
+## Reporte de Vulnerabilidades
 
-El desarrollador de **SpamQuarantine** se compromete a mantener la seguridad y privacidad de los usuarios. Dado que la aplicación opera de manera estrictamente local y sin comunicación con servidores externos, el riesgo de exposición de datos en tránsito es nulo.
+El desarrollador de **SpamZero** se compromete a mantener la seguridad y privacidad de los usuarios. Dado que la aplicación opera de manera estrictamente local y sin comunicación con servidores externos, el riesgo de exposición de datos en tránsito es nulo.
 
----
+Si descubres alguna vulnerabilidad de seguridad o comportamiento anómalo en el código nativo:
 
-## 2. Reporte Responsable de Vulnerabilidades
+1. Envía un informe directo a través de los [Issues de GitHub](https://github.com/Alakomax/SpamZero/issues).
+2. O contacta directamente al desarrollador a través de su perfil de GitHub **@Alakomax**.
 
-Si descubre una vulnerabilidad de seguridad o un problema crítico en la manipulación local de datos o permisos de Android:
+## Versiones Soportadas
 
-1. **No abra un issue público de inmediato.**
-2. Envíe un reporte detallado directamente al desarrollador o abra un issue de tipo *Security Advisory* en GitHub.
-3. Incluya los pasos detallados para reproducir el problema y el impacto potencial.
-
----
-
-## 3. Tiempo de Respuesta
-
-Nos comprometemos a revisar y responder a cualquier reporte de seguridad en un plazo máximo de **48 horas** y a publicar un parche de actualización si corresponde.
+| Versión | Soportada |
+| ------- | --------- |
+| v1.1.x  | ✅        |
+| v1.0.x  | ❌        |

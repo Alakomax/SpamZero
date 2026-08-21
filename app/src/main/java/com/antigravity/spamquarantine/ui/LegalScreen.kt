@@ -87,7 +87,7 @@ fun PrivacySection() {
         LegalCard(
             title = "100% Local (0 Servidores)",
             icon = Icons.Default.Shield,
-            description = "SpamQuarantine no posee servidores propios ni envía datos a la nube. Todo el procesamiento de números y base de datos funciona de forma síncrona en tu procesador."
+            description = "SpamZero no posee servidores propios ni envía datos a la nube. Todo el procesamiento de números y base de datos funciona de forma síncrona en tu procesador."
         )
 
         LegalCard(
@@ -110,13 +110,13 @@ fun TermsSection() {
         LegalCard(
             title = "Condiciones de Uso",
             icon = Icons.Default.Gavel,
-            description = "La aplicación se entrega 'tal cual' (As Is) bajo Licencia MIT. El usuario puede configurar o modificar las reglas Regex bajo su propia discreción."
+            description = "La aplicación se entrega 'tal cual' (As Is) bajo Licencia de Derechos Reservados. El usuario puede configurar o modificar las reglas Regex bajo su propia discreción."
         )
 
         LegalCard(
             title = "Deslinde de Responsabilidad",
             icon = Icons.Default.Info,
-            description = "Aunque la app incluye reglas optimizadas para números comerciales en Chile (600, 800, 809), no se garantiza la interceptación del 100% de spammers ni nos responsabilizamos por llamadas rechazadas por reglas configuradas por el usuario."
+            description = "Aunque la app incluye reglas optimizadas para números comerciales y spam en LATAM, no se garantiza la interceptación del 100% de spammers ni nos responsabilizamos por llamadas rechazadas por reglas configuradas por el usuario."
         )
     }
 }
@@ -154,7 +154,7 @@ fun LicensesSection() {
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "SpamQuarantine es 100% gratuita, privada y sin publicidad. Si la app te ha evitado llamadas y SMS molestos, puedes invitarme un café para apoyar su mantenimiento continuo.",
+                    text = "SpamZero es 100% gratuita, privada y sin publicidad. Si la app te ha evitado llamadas y SMS molestos, puedes invitarme un café para apoyar su mantenimiento continuo.",
                     fontSize = 13.sp,
                     color = Color(0xFFE2E8F0),
                     lineHeight = 18.sp
@@ -177,7 +177,6 @@ fun LicensesSection() {
         }
     }
 }
-
 
 @Composable
 fun LegalCard(title: String, icon: androidx.compose.ui.graphics.vector.ImageVector, description: String) {

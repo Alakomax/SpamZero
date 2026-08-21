@@ -1,12 +1,13 @@
-Proprietary & Source-Available License
+Copyright (c) 2026 Alakomax / Omar González. All Rights Reserved.
 
-Copyright (c) 2026 Alakomax / Omar González. All rights reserved.
+Source-Available & Audit-Only License
 
-The source code of this software ("SpamQuarantine") is published exclusively for open audit, security verification, and personal non-commercial testing.
+The source code of this software ("SpamZero") is published exclusively for open audit, security verification, and personal non-commercial testing.
 
-STRICTLY PROHIBITED:
-1. No commercial use, sale, reselling, or sublicensing of the software, source code, or compiled binaries.
-2. No redistribution or re-publishing of modified or unmodified versions of the software or source code on public app stores or commercial platforms.
-3. No use of the software, logo, or trademark for any revenue-generating activities without explicit prior written authorization from the copyright holder.
+Permission is hereby granted to any person obtaining a copy of this software and associated documentation files to inspect, compile locally, and audit the source code for personal, non-commercial security verification.
+
+RESTRICTIONS:
+1. COMMERCIAL USE IS STRICTLY PROHIBITED. You may not sell, license, rent, monetize, or distribute this software or modified versions of this software for commercial purposes.
+2. PUBLIC RE-DISTRIBUTION IS PROHIBITED. You may not publish, upload, or distribute derivative versions or repackaged APKs of this software on Google Play Store, F-Droid, or any other app distribution platforms without prior explicit written permission from the copyright holder.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
