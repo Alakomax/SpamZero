@@ -71,10 +71,10 @@ object PhoneUtils {
     fun getDefaultSpamRules(countryCode: String = "CL"): List<DefaultRule> {
         val globalRules = listOf(
             DefaultRule(
-                pattern = "(?i)(7k|bet7k|joker jewels|fortune (ox|mouse|tiger|rabbit)|gates of olympus|sugar rush|apuestas|ruleta|giros|recarga.*5\\.000)",
+                pattern = "(?i)(7k|bet7k|joker jewels|fortune (ox|mouse|tiger|rabbit)|gates of olympus|sugar rush|apuestas|ruleta|giros|free bet|recarga|saldo para jugar|chances de ir|liga chilena)",
                 title = "SMS de Casinos y Apuestas Online",
                 category = "📩 SMS y Estafas (Phishing)",
-                description = "Filtra publicidad no solicitada de tragamonedas, apuestas y casinos (7K, BET7K, Fortune Ox, etc.).",
+                description = "Filtra publicidad no solicitada de tragamonedas, apuestas y casinos (7K, BET7K, Fortune Ox, Free Bet, etc.).",
                 countryCode = "GLOBAL"
             ),
             DefaultRule(
@@ -92,14 +92,14 @@ object PhoneUtils {
                 countryCode = "GLOBAL"
             ),
             DefaultRule(
-                pattern = "(?i)https?://(bit\\.ly|tinyurl\\.com|cutt\\.ly|is\\.gd|t\\.co|shorturl\\.at|([a-z0-9\\-]+\\.(xyz|top|site|club|ru|tk|online|fit|info|link|live|buzz)))",
+                pattern = "(?i)https?://(bit\\.ly|tinyurl\\.com|cutt\\.ly|is\\.gd|t\\.co|shorturl\\.at|brws\\.vc|([a-z0-9\\-]+\\.(xyz|top|site|club|ru|tk|online|fit|info|link|live|buzz|vc|cc|vip|win|bet|app|store)))",
                 title = "SMS con Enlaces Acortados Sospechosos",
                 category = "📩 SMS y Estafas (Phishing)",
-                description = "Intercepta SMS con links acortados usados para robar claves o infectar el equipo.",
+                description = "Intercepta SMS con links acortados o dominios raros (.vc, .cc, .top, etc.) usados para phishing.",
                 countryCode = "GLOBAL"
             ),
             DefaultRule(
-                pattern = "^(\\+?34931|44\\d+|\\+?44\\d+)",
+                pattern = "(?i)(\\+?34931|44\\d+|\\+?44\\d+)",
                 title = "Troncales Robóticas VoIP / Spam Internacional",
                 category = "🌐 Spam e Internacionales",
                 description = "Filtra llamadas automatizadas y estafas desde centrales virtuales del exterior (+34 931, troncales 44).",

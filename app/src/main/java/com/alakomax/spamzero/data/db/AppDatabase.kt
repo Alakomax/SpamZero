@@ -56,6 +56,9 @@ interface SmsQuarantineDao {
     @Query("DELETE FROM sms_quarantine_logs")
     suspend fun clearAllSms()
 
+    @Query("SELECT COUNT(*) FROM sms_quarantine_logs WHERE senderPhoneNumber = :sender AND messageBody = :body AND timestamp > :sinceTimestamp")
+    suspend fun countRecentDuplicates(sender: String, body: String, sinceTimestamp: Long): Int
+
     @Query("SELECT COUNT(*) FROM sms_quarantine_logs")
     suspend fun getSmsBlockedCount(): Int
 }

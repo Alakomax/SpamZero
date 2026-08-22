@@ -93,14 +93,17 @@ class SmsSpamReceiver : BroadcastReceiver() {
             receiverScope.launch {
                 try {
                     val db = AppDatabase.getDatabase(context.applicationContext)
-                    db.smsQuarantineDao().insertSmsLog(
-                        SmsQuarantineLogEntity(
-                            senderPhoneNumber = senderNumber,
-                            messageBody = fullBody,
-                            matchedPattern = matchedRulePattern
+                    val recentCount = db.smsQuarantineDao().countRecentDuplicates(senderNumber, fullBody, System.currentTimeMillis() - 10000)
+                    if (recentCount == 0) {
+                        db.smsQuarantineDao().insertSmsLog(
+                            SmsQuarantineLogEntity(
+                                senderPhoneNumber = senderNumber,
+                                messageBody = fullBody,
+                                matchedPattern = matchedRulePattern
+                            )
                         )
-                    )
-                    showSpamNotification(context.applicationContext, senderNumber, fullBody, matchedRulePattern)
+                        showSpamNotification(context.applicationContext, senderNumber, fullBody, matchedRulePattern)
+                    }
                 } catch (e: Exception) {
                     Log.e("SmsSpamReceiver", "Error insertando SMS en cuarentena: ${e.message}")
                 }

@@ -2,6 +2,13 @@
 
 Haz clic en **`app-release.apk`** para descargar e instalar la aplicación directamente en tu teléfono.
 
+#### 🚀 Novedades v1.1.2 (Filtro Inteligente de Notificaciones SMS & Hardening Regex):
+
+* 🔇 **Silenciado Automático de Notificaciones SMS:** Integración de `SmsNotificationListenerService` para interceptar y cancelar en tiempo real las notificaciones de SMS spam generadas por Google Mensajes y Samsung Mensajes.
+* ⚡ **Auto-Sincronización de Reglas en SQLite:** Corrección en la carga de base de datos para garantizar que las nuevas reglas globales se inserten automáticamente en cada actualización de la app.
+* 🛡️ **Ampliación del Motor Regex Spam:** Detección reforzada contra publicidad de apuestas (`Free Bet`, `recarga hasta`, `saldo para jugar`, `chances de ir`), dominios sospechosos (`.vc`, `.cc`, `.vip`, `.win`, `.bet`) y troncales internacionales.
+* 🔄 **Control de Duplicados en Cuarentena:** Mecanismo de deduplicación de 10 segundos para prevenir registros duplicados en el historial de SMS.
+
 #### 🚀 Novedades v1.1.1-beta (Alertas SMS, Permisos Runtime & Reglas por SIM):
 
 * 📲 **Permisos Runtime de SMS y Notificaciones:** Integración del receptor de fondo con solicitud de permisos `RECEIVE_SMS` y `POST_NOTIFICATIONS` desde la pantalla principal para compatibilidad total con Android 13+.

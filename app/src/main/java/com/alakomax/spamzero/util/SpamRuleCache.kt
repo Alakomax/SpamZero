@@ -63,7 +63,7 @@ object SpamRuleCache {
                         }
                     }
 
-                    val rules = if (insertedAny) db.ruleDao().getActiveRules() else existingRules.filter { it.isActive }
+                    val rules = db.ruleDao().getActiveRules()
                     cachedRules = rules
                     rules
                 } catch (e: Exception) {
