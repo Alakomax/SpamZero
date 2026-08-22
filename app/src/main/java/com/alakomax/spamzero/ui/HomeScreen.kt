@@ -28,11 +28,22 @@ import com.alakomax.spamzero.util.UpdateManager
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(onRequestRole: () -> Unit) {
+fun HomeScreen(
+    onRequestRole: () -> Unit,
+    onRequestSmsPermission: () -> Unit = {}
+) {
     val context = LocalContext.current
     var blockedCount by remember { mutableStateOf(0) }
     var rulesCount by remember { mutableStateOf(0) }
     var isRoleGranted by remember { mutableStateOf(checkRoleGranted(context)) }
+    var isSmsPermissionGranted by remember {
+        mutableStateOf(
+            androidx.core.content.ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.RECEIVE_SMS
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        )
+    }
     var isProtectionEnabled by remember { mutableStateOf(ProtectionPreferences.isProtectionEnabled(context)) }
 
     val currentVersion = remember {
@@ -64,6 +75,10 @@ fun HomeScreen(onRequestRole: () -> Unit) {
             blockedCount = db.quarantineDao().getBlockedCount() + db.smsQuarantineDao().getSmsBlockedCount()
             rulesCount = db.ruleDao().getRuleCount()
             isRoleGranted = checkRoleGranted(context)
+            isSmsPermissionGranted = androidx.core.content.ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.RECEIVE_SMS
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
             isProtectionEnabled = ProtectionPreferences.isProtectionEnabled(context)
         }
         checkUpdates()
@@ -161,6 +176,17 @@ fun HomeScreen(onRequestRole: () -> Unit) {
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Activar Filtro de Llamadas Predeterminado", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        }
+
+        if (!isSmsPermissionGranted) {
+            Button(
+                onClick = onRequestSmsPermission,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Activar Detector y Alertas de SMS Spam", color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
 

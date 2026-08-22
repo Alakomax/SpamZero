@@ -24,7 +24,6 @@ class SmsSpamReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != "android.provider.Telephony.SMS_RECEIVED") return
 
-        // Verificar si la protección está activada por el usuario
         if (!ProtectionPreferences.isProtectionEnabled(context.applicationContext)) {
             Log.d("SmsSpamReceiver", "Protección desactivada. SMS ignorado.")
             return
@@ -60,13 +59,11 @@ class SmsSpamReceiver : BroadcastReceiver() {
         val normalizedSender = PhoneUtils.normalizePhoneNumber(senderNumber, countryInfo.code)
         Log.d("SmsSpamReceiver", "SMS entrante [${countryInfo.code} ${countryInfo.flagEmoji}] de: $senderNumber (Norm: $normalizedSender) | Texto: $fullBody")
 
-        // 1. Lista Blanca Automática: Verificar si el remitente está en la agenda de contactos
         if (isContact(context, senderNumber) || isContact(context, normalizedSender)) {
             Log.d("SmsSpamReceiver", "Remitente $normalizedSender está en Contactos. SMS permitido.")
             return
         }
 
-        // 2. Evaluamos reglas activas en RAM contra el remitente (con sanitización) y el cuerpo del texto
         val activeRules = SpamRuleCache.getActiveRulesSync(context.applicationContext)
 
         val sanitizedSender = senderNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
@@ -87,7 +84,6 @@ class SmsSpamReceiver : BroadcastReceiver() {
         if (matchedRulePattern != null) {
             Log.w("SmsSpamReceiver", "SMS SPAM DETECTADO de $normalizedSender por patrón $matchedRulePattern")
 
-            // Intentar cancelar propagación de la notificación del SMS
             try {
                 abortBroadcast()
             } catch (e: Exception) {
@@ -104,11 +100,59 @@ class SmsSpamReceiver : BroadcastReceiver() {
                             matchedPattern = matchedRulePattern
                         )
                     )
+                    showSpamNotification(context.applicationContext, senderNumber, fullBody, matchedRulePattern)
                 } catch (e: Exception) {
                     Log.e("SmsSpamReceiver", "Error insertando SMS en cuarentena: ${e.message}")
                 }
             }
         }
+    }
+
+    private fun showSpamNotification(context: Context, sender: String, body: String, pattern: String) {
+        val channelId = "spam_alerts_channel"
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? android.app.NotificationManager ?: return
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val channel = android.app.NotificationChannel(
+                channelId,
+                "Alertas de SMS Spam",
+                android.app.NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notificaciones cuando SpamZero intercepta un mensaje sospechoso"
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val intent = Intent(context, com.alakomax.spamzero.MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("navigate_to_tab", 1)
+        }
+
+        val pendingIntent = android.app.PendingIntent.getActivity(
+            context,
+            System.currentTimeMillis().toInt(),
+            intent,
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val snippet = if (body.length > 60) body.take(60) + "..." else body
+
+        val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(android.R.drawable.ic_dialog_alert)
+            .setContentTitle("🚨 SMS Sospechoso Interceptado (SpamZero)")
+            .setContentText("De: $sender | $snippet")
+            .setStyle(androidx.core.app.NotificationCompat.BigTextStyle().bigText("De: $sender\n\n$body\n\nCoincide con patrón: $pattern"))
+            .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .addAction(
+                android.R.drawable.ic_menu_view,
+                "Ver en Cuarentena",
+                pendingIntent
+            )
+            .build()
+
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
     }
 
     private fun isContact(context: Context, number: String): Boolean {

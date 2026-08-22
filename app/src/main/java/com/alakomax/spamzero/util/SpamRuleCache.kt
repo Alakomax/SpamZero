@@ -91,10 +91,23 @@ object SpamRuleCache {
                     val targetCountryIso = countryCode ?: CountryUtils.getSimCountryInfo(context.applicationContext).code
                     val db = AppDatabase.getDatabase(context.applicationContext)
                     val existingRules = db.ruleDao().getAllRules()
-                    val existingPatterns = existingRules.map { it.pattern }.toSet()
 
-                    PhoneUtils.getDefaultSpamRules(targetCountryIso).forEach { rule ->
-                        if (!existingPatterns.contains(rule.pattern)) {
+                    val targetRules = PhoneUtils.getDefaultSpamRules(targetCountryIso)
+                    val validPatterns = targetRules.map { it.pattern }.toSet()
+                    val allKnownDefaultPatterns = PhoneUtils.getAllKnownDefaultPatterns()
+
+                    // Eliminar reglas por defecto pertenecientes a otros países
+                    existingRules.forEach { existing ->
+                        if (allKnownDefaultPatterns.contains(existing.pattern) && !validPatterns.contains(existing.pattern)) {
+                            db.ruleDao().deleteRule(existing)
+                        }
+                    }
+
+                    val updatedExistingPatterns = db.ruleDao().getAllRules().map { it.pattern }.toSet()
+
+                    // Insertar reglas faltantes del país activo
+                    targetRules.forEach { rule ->
+                        if (!updatedExistingPatterns.contains(rule.pattern)) {
                             db.ruleDao().insertRule(
                                 RuleEntity(
                                     pattern = rule.pattern,
@@ -105,6 +118,7 @@ object SpamRuleCache {
                             )
                         }
                     }
+
                     val rules = db.ruleDao().getAllRules()
                     cachedRules = rules.filter { it.isActive }
                     rules

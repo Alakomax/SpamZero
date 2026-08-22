@@ -1,1 +1,2 @@
 | ID | Fecha | Dominio | Error | Corrección | Prevención | Estado |
+| ERR-001 | 2026-08-22 | SpamZero / OpenSource | Rechazo en IzzyOnDroid por política App Inclusion AI Policy debido a modismos/comentarios de IA en código, commits o notas | Tema Codeberg cerrado; priorizar distribución directa (GitHub Releases + Obtainium + Play Store) y sanitizar codebase | Prohibido comentarios explicativos o redundantes estilo LLM en código; prohibido commits masivos no atómicos; prohibido descripciones/PRs/notas con sintaxis formal sobre-estructurada de IA. | CERRADO |

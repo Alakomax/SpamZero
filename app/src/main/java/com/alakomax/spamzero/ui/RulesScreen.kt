@@ -30,10 +30,8 @@ fun RulesScreen() {
     val context = LocalContext.current
     var rules by remember { mutableStateOf<List<RuleEntity>>(emptyList()) }
     var showDialog by remember { mutableStateOf(false) }
-    var showCountryPicker by remember { mutableStateOf(false) }
-    
+
     val simCountry = remember { CountryUtils.getSimCountryInfo(context) }
-    var selectedCountry by remember { mutableStateOf(simCountry) }
 
     var newTitle by remember { mutableStateOf("") }
     var newCategory by remember { mutableStateOf("📞 Llamadas Nacionales") }
@@ -43,7 +41,7 @@ fun RulesScreen() {
 
     val loadRules = {
         scope.launch {
-            SpamRuleCache.getActiveRulesSync(context)
+            SpamRuleCache.restoreDefaultRulesSync(context, simCountry.code)
             val db = AppDatabase.getDatabase(context)
             rules = db.ruleDao().getAllRules()
         }
@@ -76,7 +74,7 @@ fun RulesScreen() {
                 IconButton(
                     onClick = {
                         scope.launch {
-                            SpamRuleCache.restoreDefaultRulesSync(context, selectedCountry.code)
+                            SpamRuleCache.restoreDefaultRulesSync(context, simCountry.code)
                             loadRules()
                         }
                     }
@@ -93,9 +91,7 @@ fun RulesScreen() {
 
         // Tarjeta de Información de País y SIM
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { showCountryPicker = true },
+            modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)),
             shape = RoundedCornerShape(10.dp)
         ) {
@@ -107,17 +103,17 @@ fun RulesScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = selectedCountry.flagEmoji, fontSize = 24.sp)
+                    Text(text = simCountry.flagEmoji, fontSize = 24.sp)
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(
-                            text = "País Activo: ${selectedCountry.name} (${selectedCountry.dialCode.ifEmpty { "Global" }})",
+                            text = "País Activo: ${simCountry.name} (${simCountry.dialCode.ifEmpty { "Global" }})",
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            text = if (selectedCountry.code == simCountry.code) "Detección Automática por SIM" else "Selección Manual de Reglas",
+                            text = "Detección Automática por SIM + Reglas Globales",
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                         )
@@ -125,7 +121,7 @@ fun RulesScreen() {
                 }
                 Icon(
                     imageVector = Icons.Default.Public,
-                    contentDescription = "Cambiar País",
+                    contentDescription = "País Activo",
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -166,53 +162,6 @@ fun RulesScreen() {
                 }
             }
         }
-    }
-
-    // Modal para seleccionar País LATAM
-    if (showCountryPicker) {
-        AlertDialog(
-            onDismissRequest = { showCountryPicker = false },
-            title = { Text("Seleccionar País (LATAM)") },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    CountryUtils.SUPPORTED_COUNTRIES.forEach { country ->
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    selectedCountry = country
-                                    showCountryPicker = false
-                                    scope.launch {
-                                        SpamRuleCache.restoreDefaultRulesSync(context, country.code)
-                                        loadRules()
-                                    }
-                                }
-                                .padding(vertical = 6.dp, horizontal = 4.dp),
-                            shape = RoundedCornerShape(6.dp),
-                            color = if (selectedCountry.code == country.code) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(text = country.flagEmoji, fontSize = 20.sp)
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Text(
-                                    text = "${country.name} (${country.dialCode})",
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 14.sp
-                                )
-                            }
-                        }
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { showCountryPicker = false }) {
-                    Text("Cerrar")
-                }
-            }
-        )
     }
 
     if (showDialog) {

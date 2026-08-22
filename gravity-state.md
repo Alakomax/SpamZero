@@ -1,12 +1,12 @@
-## [ESTADO ACTUAL] Última actualización: 2026-08-21 | Dominio: SpamZero Web Landing Page UI/UX & Android App v1.1.0 (LATAM)
-- Objetivo Activo: Lanzamiento oficial de SpamZero v1.1.0 con rebranding completo, silenciamiento a 0 repiques (`setSilenceCall`), bandera de SIM en TopAppBar, motor multi-país LATAM (Chile 🇨🇱, Colombia 🇨🇴, Argentina 🇦🇷, Venezuela 🇻🇪, México 🇲🇽, Perú 🇵🇪) e interceptación avanzada de SMS spam.
-- Última Acción: Auditoría de seguridad y hardening completados: `android:allowBackup="false"` para privacidad estricta de base de datos local, compilación final de `SpamZero.apk` (2.3 MB) firmada por `release.jks` y publicada en GitHub.
-- Decisiones/Bloqueos: Campaña de difusión y RRSS pausadas hasta la aprobación oficial de Play Protect e IzzyOnDroid. Identificador activo: `com.alakomax.spamzero`.
+## [ESTADO ACTUAL] Última actualización: 2026-08-22 | Dominio: SpamZero Web Landing Page UI/UX & Android App v1.1.0 (LATAM)
+- Objetivo Activo: Implementación de permisos runtime de SMS/Notificaciones, sistema de alertas de SMS Spam y filtrado de reglas por SIM sin acumulación de países ajenos.
+- Última Acción: Implementación completada de permisos runtime `RECEIVE_SMS`/`POST_NOTIFICATIONS`, notificaciones interactivas en `SmsSpamReceiver.kt`, refactorización de `SpamRuleCache.kt` y compilación `assembleDebug` exitosa.
+- Decisiones/Bloqueos: Identificador activo definitivo `com.alakomax.spamzero`. Sin rol de app predeterminada de SMS (detección pasiva + alertas e historial en Cuarentena). Reglas sincronizadas automáticamente por SIM.
 - Vínculo Marketing: `d:\Suma_Proyectos\Proyectos\.marketing\SpamQuarantine` (Estrategia RRSS y Guiones).
-- Siguiente Paso: Monitoreo de propagación en Google Play Protect y aprobación de la incidencia #484 en IzzyOnDroid / Codeberg.
+- Siguiente Paso: Probar el nuevo paquete generado en dispositivos de testeo y proceder con el siguiente release en GitHub / Play Store.
 
 ## Historial Reciente
+- 2026-08-22: Implementación de permisos runtime de SMS, alertas interactivas `🚨 SMS Sospechoso Interceptado` y refactorización de reglas por SIM. Compilación `assembleDebug` exitosa.
+- 2026-08-22: Cierre de tema Codeberg, registro de regla ERR-001 en `gravity-errors.log` y decisión de sanitizar codebase para distribución directa.
+- 2026-08-22: Rechazo formal en IzzyOnDroid (Issue #484) debido a la política de inclusión sobre código/arquitectura generada por LLM.
 - 2026-08-21: Auditoría de seguridad y hardening: configuración de `allowBackup=false` en Manifest para proteger datos locales, recompilado de ejecutables y actualización de tag `v1.1.0` en GitHub.
-- 2026-08-21: Postulación en IzzyOnDroid completada: creación formal del Issue #484 en Codeberg para la indexación de SpamZero en el repositorio Open Source F-Droid.
-- 2026-08-21: Optimización de tamaño APK: activación de R8 y Resource Shrinking reduciendo el ejecutable de 37 MB a 2.3 MB, y actualización de tag `v1.1.0` en GitHub.
-- 2026-08-21: Apelación enviada a Google Play Protect: registro formal del paquete `com.alakomax.spamzero` y Hash SHA-256 de `SpamZero.apk` ante los servidores de seguridad de Google.

@@ -4,10 +4,6 @@ import java.util.regex.Pattern
 
 object PhoneUtils {
 
-    /**
-     * Normaliza un número telefónico a formato E.164 o limpiando caracteres espurios.
-     * Elimina ceros iniciales de discado nacional (ej: "0943432103" -> "+56943432103").
-     */
     fun normalizeChilePhoneNumber(rawNumber: String?): String {
         return normalizePhoneNumber(rawNumber, "CL")
     }
@@ -15,7 +11,6 @@ object PhoneUtils {
     fun normalizePhoneNumber(rawNumber: String?, countryIso: String = "CL"): String {
         if (rawNumber.isNullOrBlank()) return ""
 
-        // Eliminar todo excepto dígitos y signo +
         var digits = rawNumber.replace(Regex("[^0-9+]"), "")
 
         if (digits.startsWith("+")) {
@@ -23,18 +18,16 @@ object PhoneUtils {
         }
 
         val country = CountryUtils.getCountryByCode(countryIso)
-        val prefixNoPlus = country.dialCode.removePrefix("+") // ej: "56"
+        val prefixNoPlus = country.dialCode.removePrefix("+")
 
         if (digits.startsWith(prefixNoPlus)) {
             return "+$digits"
         }
 
-        // Si empieza con 0 nacional (ej: 0943432103 -> 943432103)
         if (digits.startsWith("0") && digits.length > 1) {
             digits = digits.removePrefix("0")
         }
 
-        // Caso Chile (+56)
         if (countryIso.equals("CL", ignoreCase = true) || prefixNoPlus == "56") {
             if (digits.startsWith("9") && digits.length == 9) {
                 return "+56$digits"
@@ -45,23 +38,16 @@ object PhoneUtils {
             return "+56$digits"
         }
 
-        // Caso genérico para cualquier país con dialCode (ej: +57, +54, +58, +52, +51)
         return if (country.dialCode.isNotBlank()) "${country.dialCode}$digits" else "+$digits"
     }
 
-    /**
-     * Sanitiza una cadena telefónica o texto y verifica coincidencia con regex.
-     * Elimina espacios y guiones en números telefónicos para que regexes con \d+ no fallen.
-     */
     fun matchesRegexPattern(textOrNumber: String, regexPattern: String): Boolean {
         if (textOrNumber.isBlank() || regexPattern.isBlank()) return false
         return try {
             val pattern = Pattern.compile(regexPattern, Pattern.CASE_INSENSITIVE or Pattern.DOTALL)
             
-            // Intento 1: Coincidencia con texto o número original
             if (pattern.matcher(textOrNumber).find()) return true
 
-            // Intento 2: Sanitización de espacios y guiones en números telefónicos
             val sanitized = textOrNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
             if (sanitized != textOrNumber && pattern.matcher(sanitized).find()) return true
 
@@ -216,14 +202,8 @@ object PhoneUtils {
         return countrySpecific + globalRules
     }
 
-    /**
-     * Mantiene compatibilidad de catálogo por defecto para Chile.
-     */
-    fun getDefaultChileSpamRules(): List<DefaultRule> {
-        return getDefaultSpamRules("CL")
-    }
-
-    fun getDefaultChileSpamPatterns(): List<Pair<String, String>> {
-        return getDefaultChileSpamRules().map { Pair(it.pattern, "${it.title}: ${it.description}") }
+    fun getAllKnownDefaultPatterns(): Set<String> {
+        val countries = listOf("CL", "CO", "AR", "VE", "MX", "PE")
+        return countries.flatMap { getDefaultSpamRules(it) }.map { it.pattern }.toSet()
     }
 }

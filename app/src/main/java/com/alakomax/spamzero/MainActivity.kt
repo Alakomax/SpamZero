@@ -23,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.alakomax.spamzero.ui.HomeScreen
 import com.alakomax.spamzero.ui.LegalScreen
 import com.alakomax.spamzero.ui.QuarantineScreen
@@ -43,14 +44,26 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val smsPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val smsGranted = permissions[android.Manifest.permission.RECEIVE_SMS] ?: false
+        if (smsGranted) {
+            Toast.makeText(this, "¡Protección contra SMS Spam activada!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Se requiere permiso de SMS para detectar mensajes spam.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Pre-calentar el caché de reglas en RAM en segundo plano
         SpamRuleCache.prewarmCacheAsync(applicationContext)
 
         val prefs = getSharedPreferences("app_settings", MODE_PRIVATE)
         val defaultDark = prefs.getBoolean("is_dark_mode", true)
+
+        val initialTab = intent?.getIntExtra("navigate_to_tab", 0) ?: 0
 
         setContent {
             var isDarkMode by remember { mutableStateOf(defaultDark) }
@@ -58,15 +71,25 @@ class MainActivity : ComponentActivity() {
             SpamQuarantineTheme(darkTheme = isDarkMode) {
                 MainAppStructure(
                     isDarkMode = isDarkMode,
+                    initialTab = initialTab,
                     onToggleDarkMode = {
                         val newMode = !isDarkMode
                         isDarkMode = newMode
                         prefs.edit().putBoolean("is_dark_mode", newMode).apply()
                     },
-                    onRequestRole = { requestCallScreeningRole() }
+                    onRequestRole = { requestCallScreeningRole() },
+                    onRequestSmsPermission = { requestSmsPermissions() }
                 )
             }
         }
+    }
+
+    private fun requestSmsPermissions() {
+        val permissions = mutableListOf(android.Manifest.permission.RECEIVE_SMS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+        smsPermissionLauncher.launch(permissions.toTypedArray())
     }
 
     private fun requestCallScreeningRole() {
@@ -88,10 +111,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainAppStructure(
     isDarkMode: Boolean,
+    initialTab: Int = 0,
     onToggleDarkMode: () -> Unit,
-    onRequestRole: () -> Unit
+    onRequestRole: () -> Unit,
+    onRequestSmsPermission: () -> Unit
 ) {
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableStateOf(initialTab) }
     val context = LocalContext.current
     val countryInfo = remember { CountryUtils.getSimCountryInfo(context) }
 
@@ -130,32 +155,35 @@ fun MainAppStructure(
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
                     icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
-                    label = { Text("Inicio") }
+                    label = { Text("Inicio", maxLines = 1, softWrap = false, fontSize = 11.sp) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
                     icon = { Icon(Icons.Default.Block, contentDescription = "Cuarentena") },
-                    label = { Text("Cuarentena") }
+                    label = { Text("Cuarentena", maxLines = 1, softWrap = false, fontSize = 11.sp) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { selectedTab = 2 },
                     icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Reglas") },
-                    label = { Text("Reglas") }
+                    label = { Text("Reglas", maxLines = 1, softWrap = false, fontSize = 11.sp) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 3,
                     onClick = { selectedTab = 3 },
                     icon = { Icon(Icons.Default.Gavel, contentDescription = "Legal") },
-                    label = { Text("Legal") }
+                    label = { Text("Legal", maxLines = 1, softWrap = false, fontSize = 11.sp) }
                 )
             }
         }
     ) { paddingValues ->
         Surface(modifier = Modifier.padding(paddingValues)) {
             when (selectedTab) {
-                0 -> HomeScreen(onRequestRole = onRequestRole)
+                0 -> HomeScreen(
+                    onRequestRole = onRequestRole,
+                    onRequestSmsPermission = onRequestSmsPermission
+                )
                 1 -> QuarantineScreen()
                 2 -> RulesScreen()
                 3 -> LegalScreen()

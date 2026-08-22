@@ -31,7 +31,6 @@ class SpamCallScreeningService : CallScreeningService() {
             return
         }
 
-        // Verificar si la protección está activada por el usuario
         if (!ProtectionPreferences.isProtectionEnabled(applicationContext)) {
             Log.d("SpamScreening", "Protección deshabilitada por el usuario. Llamada permitida: $rawNumber")
             respondToCall(callDetails, CallResponse.Builder().build())
@@ -42,14 +41,12 @@ class SpamCallScreeningService : CallScreeningService() {
         val normalizedNumber = PhoneUtils.normalizePhoneNumber(rawNumber, countryInfo.code)
         Log.d("SpamScreening", "Llamada entrante evaluada [${countryInfo.code} ${countryInfo.flagEmoji}]: Raw=$rawNumber -> E.164=$normalizedNumber")
 
-        // 1. Lista Blanca Automática: Verificar si está en Contactos del dispositivo
         if (isContact(this, rawNumber) || isContact(this, normalizedNumber)) {
             Log.d("SpamScreening", "Número $normalizedNumber está en Contactos. Permitido.")
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
 
-        // 2. Obtener reglas activas en RAM de forma ultrarrápida
         val activeRules = SpamRuleCache.getActiveRulesSync(applicationContext)
 
         val sanitizedRaw = rawNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
@@ -69,23 +66,21 @@ class SpamCallScreeningService : CallScreeningService() {
         if (matchedRule != null) {
             Log.w("SpamScreening", "LLAMADA SPAM BLOQUEADA (0 REPIQUES): $normalizedNumber por patrón ${matchedRule.pattern}")
 
-            // Responder a Android Telecom INMEDIATAMENTE: Silenciar ringer y cortar llamada (0 repiques)
             val responseBuilder = CallResponse.Builder()
-                .setDisallowCall(true)  // Bloquear llamada
-                .setRejectCall(true)    // Rechazar/cortar línea
-                .setSkipCallLog(false)  // Conservar en log para auditoría
+                .setDisallowCall(true)
+                .setRejectCall(true)
+                .setSkipCallLog(false)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                responseBuilder.setSilenceCall(true) // Silenciar timbre al instante (0 repiques)
+                responseBuilder.setSilenceCall(true)
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                responseBuilder.setSkipNotification(true) // Ocultar notificación emergente
+                responseBuilder.setSkipNotification(true)
             }
 
             respondToCall(callDetails, responseBuilder.build())
 
-            // Registrar en la base de datos de Cuarentena en segundo plano (asíncrono)
             val matchedPattern = matchedRule.pattern
             serviceScope.launch {
                 try {
