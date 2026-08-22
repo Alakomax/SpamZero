@@ -174,8 +174,11 @@ object UpdateManager {
 
     private fun isVersionNewer(latest: String, current: String): Boolean {
         if (latest.isBlank()) return false
-        val latestParts = latest.split(".").mapNotNull { it.toIntOrNull() }
-        val currentParts = current.split(".").mapNotNull { it.toIntOrNull() }
+        val cleanL = latest.substringBefore("-").trim()
+        val cleanC = current.substringBefore("-").trim()
+
+        val latestParts = cleanL.split(".").mapNotNull { it.toIntOrNull() }
+        val currentParts = cleanC.split(".").mapNotNull { it.toIntOrNull() }
 
         val length = maxOf(latestParts.size, currentParts.size)
         for (i in 0 until length) {
