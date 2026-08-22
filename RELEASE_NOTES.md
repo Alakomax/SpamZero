@@ -1,8 +1,13 @@
 ### 📱 SpamZero - Lanzamiento Oficial para Android & LATAM
 
-Haz clic en **`app-debug.apk`** para descargar e instalar la aplicación directamente en tu teléfono.
+Haz clic en **`app-release.apk`** para descargar e instalar la aplicación directamente en tu teléfono.
 
-#### 🚀 Novedades v1.1.0 (Rebranding & Expansión LATAM):
+#### 🚀 Novedades v1.1.1-beta (Alertas SMS, Permisos Runtime & Reglas por SIM):
+
+* 📲 **Permisos Runtime de SMS y Notificaciones:** Integración del receptor de fondo con solicitud de permisos `RECEIVE_SMS` y `POST_NOTIFICATIONS` desde la pantalla principal para compatibilidad total con Android 13+.
+* 🚨 **Notificación de Alerta Interactivas:** Al interceptar un SMS de estafa (casinos `7K`, falsas multas, links acortados), la app emite la alerta `🚨 SMS Sospechoso Interceptado` con el botón de acción `[Ver en Cuarentena]` para navegación directa.
+* 🌐 **Filtro Automático de Reglas por SIM:** Sincronización inteligente de reglas según la SIM activa + reglas globales LATAM, eliminando la acumulación de reglas de otros países.
+* 📱 **Corrección Visual de Layout:** Ajuste responsive en la barra de navegación inferior (`Cuarentena`) con restricción de línea única (`maxLines = 1`, `softWrap = false`), solucionando saltos de texto en fuentes de sistema personalizadas.
 
 * 🏷️ **Rebranding Oficial a SpamZero:** Evolución del producto a **SpamZero**, un nombre comercial directo, moderno y con pronunciación fluida en toda Latinoamérica.
 * ⚡ **Silenciamiento e Interceptación a 0 Repiques:** Implementación de `setSilenceCall(true)` (API 29+) y pre-calentamiento del caché de reglas en RAM. Las llamadas spam ahora son silenciadas y cortadas instantáneamente sin dar ningún repique ni sonar el ringer del teléfono.
