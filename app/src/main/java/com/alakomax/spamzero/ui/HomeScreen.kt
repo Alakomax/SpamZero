@@ -30,7 +30,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     onRequestRole: () -> Unit,
-    onRequestSmsPermission: () -> Unit = {}
+    onRequestSmsPermission: () -> Unit = {},
+    onRequestNotificationListener: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var blockedCount by remember { mutableStateOf(0) }
@@ -44,6 +45,7 @@ fun HomeScreen(
             ) == android.content.pm.PackageManager.PERMISSION_GRANTED
         )
     }
+    var isNotifListenerGranted by remember { mutableStateOf(checkNotifListenerGranted(context)) }
     var isProtectionEnabled by remember { mutableStateOf(ProtectionPreferences.isProtectionEnabled(context)) }
 
     val currentVersion = remember {
@@ -79,6 +81,7 @@ fun HomeScreen(
                 context,
                 android.Manifest.permission.RECEIVE_SMS
             ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            isNotifListenerGranted = checkNotifListenerGranted(context)
             isProtectionEnabled = ProtectionPreferences.isProtectionEnabled(context)
         }
         checkUpdates()
@@ -187,6 +190,17 @@ fun HomeScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Activar Detector y Alertas de SMS Spam", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        }
+
+        if (!isNotifListenerGranted) {
+            Button(
+                onClick = onRequestNotificationListener,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF059669)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Activar Silenciado Automático de SMS Spam", color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
 
@@ -392,3 +406,10 @@ private fun checkRoleGranted(context: Context): Boolean {
     }
     return true
 }
+
+private fun checkNotifListenerGranted(context: Context): Boolean {
+    val pkgName = context.packageName
+    val flat = android.provider.Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
+    return flat != null && flat.contains(pkgName)
+}
+

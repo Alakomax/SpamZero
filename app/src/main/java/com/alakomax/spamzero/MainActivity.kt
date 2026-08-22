@@ -78,9 +78,20 @@ class MainActivity : ComponentActivity() {
                         prefs.edit().putBoolean("is_dark_mode", newMode).apply()
                     },
                     onRequestRole = { requestCallScreeningRole() },
-                    onRequestSmsPermission = { requestSmsPermissions() }
+                    onRequestSmsPermission = { requestSmsPermissions() },
+                    onRequestNotificationListener = { requestNotificationListenerPermission() }
                 )
             }
+        }
+    }
+
+    private fun requestNotificationListenerPermission() {
+        try {
+            val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+            startActivity(intent)
+            Toast.makeText(this, "Busca SpamZero y activa el permiso para silenciar SMS spam.", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Abre Ajustes > Notificaciones > Acceso a notificaciones.", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -114,7 +125,8 @@ fun MainAppStructure(
     initialTab: Int = 0,
     onToggleDarkMode: () -> Unit,
     onRequestRole: () -> Unit,
-    onRequestSmsPermission: () -> Unit
+    onRequestSmsPermission: () -> Unit,
+    onRequestNotificationListener: () -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(initialTab) }
     val context = LocalContext.current
@@ -182,7 +194,8 @@ fun MainAppStructure(
             when (selectedTab) {
                 0 -> HomeScreen(
                     onRequestRole = onRequestRole,
-                    onRequestSmsPermission = onRequestSmsPermission
+                    onRequestSmsPermission = onRequestSmsPermission,
+                    onRequestNotificationListener = onRequestNotificationListener
                 )
                 1 -> QuarantineScreen()
                 2 -> RulesScreen()

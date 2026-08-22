@@ -49,6 +49,17 @@
             </intent-filter>
         </receiver>
 
+        <!-- Servicio Listener de Notificaciones para cancelar alertas de SMS Spam -->
+        <service
+            android:name=".service.SmsNotificationListenerService"
+            android:label="Filtro Inteligente de Notificaciones SMS SpamZero"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.alakomax.spamzero.fileprovider"
