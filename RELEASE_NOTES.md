@@ -2,6 +2,13 @@
 
 Haz clic en **`app-release.apk`** para descargar e instalar la aplicación directamente en tu teléfono.
 
+#### 🚀 Novedades v1.1.3 (Soporte de Autoinicio en Fabricantes, Permisos Asíncronos & Corrección UI):
+
+* 🛠️ **Configuración de Autoinicio para Xiaomi, Huawei, Oppo y Vivo:** Detección automática del fabricante e inclusión del bloque `<queries>` en `AndroidManifest.xml` para abrir directamente la pantalla de gestión de segundo plano.
+* ⚡ **Consultas Asíncronas en `Dispatchers.IO`:** Mapeo y conteo de cuarentena movido a hilos de segundo plano para evitar bloqueos de interfaz y garantizar fluidez a 60 FPS en Compose.
+* 🛡️ **Verificación de Permisos Unificada (`PermissionChecker`):** Validación exacta por `ComponentName` en `NotificationListener` y preservación de las preferencias de usuario.
+* 📲 **Cierre Automático de Diálogos:** Desplazamiento inteligente a los ajustes del sistema al pulsar en la concesión de permisos.
+
 #### 🚀 Novedades v1.1.2 (Filtro Inteligente de Notificaciones SMS & Hardening Regex):
 
 * 🔇 **Silenciado Automático de Notificaciones SMS:** Integración de `SmsNotificationListenerService` para interceptar y cancelar en tiempo real las notificaciones de SMS spam generadas por Google Mensajes y Samsung Mensajes.
