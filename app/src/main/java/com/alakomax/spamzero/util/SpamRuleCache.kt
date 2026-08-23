@@ -48,7 +48,6 @@ object SpamRuleCache {
                     val countryInfo = CountryUtils.getSimCountryInfo(context.applicationContext)
                     val defaultRules = PhoneUtils.getDefaultSpamRules(countryInfo.code)
 
-                    var insertedAny = false
                     defaultRules.forEach { rule ->
                         if (!existingPatterns.contains(rule.pattern)) {
                             db.ruleDao().insertRule(
@@ -59,7 +58,6 @@ object SpamRuleCache {
                                     description = rule.description
                                 )
                             )
-                            insertedAny = true
                         }
                     }
 

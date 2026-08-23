@@ -43,16 +43,16 @@ object PhoneUtils {
 
     fun matchesRegexPattern(textOrNumber: String, regexPattern: String): Boolean {
         if (textOrNumber.isBlank() || regexPattern.isBlank()) return false
-        return try {
+        return runCatching {
             val pattern = Pattern.compile(regexPattern, Pattern.CASE_INSENSITIVE or Pattern.DOTALL)
-            
-            if (pattern.matcher(textOrNumber).find()) return true
+
+            if (pattern.matcher(textOrNumber).find()) return@runCatching true
 
             val sanitized = textOrNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
-            if (sanitized != textOrNumber && pattern.matcher(sanitized).find()) return true
+            if (sanitized != textOrNumber && pattern.matcher(sanitized).find()) return@runCatching true
 
             false
-        } catch (e: Exception) {
+        }.getOrElse {
             false
         }
     }

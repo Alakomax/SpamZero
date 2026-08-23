@@ -85,17 +85,20 @@ class SmsNotificationListenerService : NotificationListenerService() {
 
             serviceScope.launch {
                 try {
-                    val db = AppDatabase.getDatabase(applicationContext)
-                    val recentCount = db.smsQuarantineDao().countRecentDuplicates(title, fullBody, System.currentTimeMillis() - 10000)
-                    if (recentCount == 0) {
-                        db.smsQuarantineDao().insertSmsLog(
-                            SmsQuarantineLogEntity(
-                                senderPhoneNumber = title,
-                                messageBody = fullBody,
-                                matchedPattern = matchedRulePattern
+                    val isDuplicate = com.alakomax.spamzero.util.SmsDeduplicator.isDuplicateAndMark(title, fullBody)
+                    if (!isDuplicate) {
+                        val db = AppDatabase.getDatabase(applicationContext)
+                        val recentCount = db.smsQuarantineDao().countRecentDuplicates(title, fullBody, System.currentTimeMillis() - 10000)
+                        if (recentCount == 0) {
+                            db.smsQuarantineDao().insertSmsLog(
+                                SmsQuarantineLogEntity(
+                                    senderPhoneNumber = title,
+                                    messageBody = fullBody,
+                                    matchedPattern = matchedRulePattern
+                                )
                             )
-                        )
-                        showSpamNotification(applicationContext, title, fullBody, matchedRulePattern)
+                            showSpamNotification(applicationContext, title, fullBody, matchedRulePattern)
+                        }
                     }
                 } catch (e: Exception) {
                     Log.e("SmsNotificationListener", "Error insertando SMS en cuarentena: ${e.message}")

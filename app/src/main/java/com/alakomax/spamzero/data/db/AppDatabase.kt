@@ -2,6 +2,8 @@ package com.alakomax.spamzero.data.db
 
 import android.content.Context
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.alakomax.spamzero.data.model.QuarantineLogEntity
 import com.alakomax.spamzero.data.model.RuleEntity
 import com.alakomax.spamzero.data.model.SmsQuarantineLogEntity
@@ -77,13 +79,37 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE spam_rules ADD COLUMN category TEXT NOT NULL DEFAULT 'Llamadas Nacionales'")
+                db.execSQL("ALTER TABLE spam_rules ADD COLUMN title TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `sms_quarantine_logs` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `senderPhoneNumber` TEXT NOT NULL,
+                        `messageBody` TEXT NOT NULL,
+                        `matchedPattern` TEXT NOT NULL,
+                        `timestamp` INTEGER NOT NULL
+                    )
+                """.trimIndent())
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "spam_quarantine_db"
-                ).fallbackToDestructiveMigration().build()
+                )
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .fallbackToDestructiveMigration()
+                .build()
                 INSTANCE = instance
                 instance
             }
