@@ -267,9 +267,10 @@ fun HomeScreen(
                     ) {
                         Text(
                             text = "Checklist de Permisos de Sistema",
-                            fontSize = 15.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f, fill = false)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Surface(
@@ -281,6 +282,8 @@ fun HomeScreen(
                                 color = if (grantedCount == totalCount) Color(0xFF10B981) else Color(0xFFEF4444),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                softWrap = false,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                             )
                         }
