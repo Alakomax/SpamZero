@@ -1,17 +1,25 @@
 package com.alakomax.spamzero.ui
 
-import android.app.role.RoleManager
-import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BatteryFull
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.automirrored.filled.Message
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.PhoneInTalk
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +29,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import com.alakomax.spamzero.data.db.AppDatabase
+import com.alakomax.spamzero.ui.components.MissingPermissionsDialog
+import com.alakomax.spamzero.util.PermissionChecker
 import com.alakomax.spamzero.util.ProtectionPreferences
 import com.alakomax.spamzero.util.UpdateInfo
 import com.alakomax.spamzero.util.UpdateManager
@@ -34,25 +47,24 @@ fun HomeScreen(
     onRequestNotificationListener: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     var blockedCount by remember { mutableStateOf(0) }
     var rulesCount by remember { mutableStateOf(0) }
-    var isRoleGranted by remember { mutableStateOf(checkRoleGranted(context)) }
-    var isSmsPermissionGranted by remember {
-        mutableStateOf(
-            androidx.core.content.ContextCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.RECEIVE_SMS
-            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        )
-    }
-    var isNotifListenerGranted by remember { mutableStateOf(checkNotifListenerGranted(context)) }
+
+    var isRoleGranted by remember { mutableStateOf(PermissionChecker.isCallScreeningGranted(context)) }
+    var isSmsPermissionGranted by remember { mutableStateOf(PermissionChecker.isSmsPermissionGranted(context)) }
+    var isNotifListenerGranted by remember { mutableStateOf(PermissionChecker.isNotificationListenerGranted(context)) }
+    var isBatteryOptimIgnored by remember { mutableStateOf(PermissionChecker.isBatteryOptimizationIgnored(context)) }
+
     var isProtectionEnabled by remember { mutableStateOf(ProtectionPreferences.isProtectionEnabled(context)) }
+    var showMissingDialog by remember { mutableStateOf(false) }
 
     val currentVersion = remember {
         try {
-            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "1.1.0"
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "1.1.2"
         } catch (e: Exception) {
-            "1.1.0"
+            "1.1.2"
         }
     }
 
@@ -61,6 +73,45 @@ fun HomeScreen(
     var isDownloading by remember { mutableStateOf(false) }
     var downloadProgress by remember { mutableStateOf(0) }
     val scope = rememberCoroutineScope()
+
+    val refreshPermissionStates = {
+        val role = PermissionChecker.isCallScreeningGranted(context)
+        val sms = PermissionChecker.isSmsPermissionGranted(context)
+        val notif = PermissionChecker.isNotificationListenerGranted(context)
+        val battery = PermissionChecker.isBatteryOptimizationIgnored(context)
+
+        isRoleGranted = role
+        isSmsPermissionGranted = sms
+        isNotifListenerGranted = notif
+        isBatteryOptimIgnored = battery
+
+        val allEssentialGranted = role && sms && notif
+        val currentPref = ProtectionPreferences.isProtectionEnabled(context)
+
+        if (currentPref && !allEssentialGranted) {
+            ProtectionPreferences.setProtectionEnabled(context, false)
+            isProtectionEnabled = false
+        } else {
+            isProtectionEnabled = currentPref && allEssentialGranted
+        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                refreshPermissionStates()
+                scope.launch {
+                    val db = AppDatabase.getDatabase(context)
+                    blockedCount = db.quarantineDao().getBlockedCount() + db.smsQuarantineDao().getSmsBlockedCount()
+                    rulesCount = db.ruleDao().getRuleCount()
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     val checkUpdates = {
         isCheckingUpdate = true
@@ -72,33 +123,35 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
-        scope.launch {
-            val db = AppDatabase.getDatabase(context)
-            blockedCount = db.quarantineDao().getBlockedCount() + db.smsQuarantineDao().getSmsBlockedCount()
-            rulesCount = db.ruleDao().getRuleCount()
-            isRoleGranted = checkRoleGranted(context)
-            isSmsPermissionGranted = androidx.core.content.ContextCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.RECEIVE_SMS
-            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-            isNotifListenerGranted = checkNotifListenerGranted(context)
-            isProtectionEnabled = ProtectionPreferences.isProtectionEnabled(context)
-        }
+        refreshPermissionStates()
         checkUpdates()
+    }
+
+    if (showMissingDialog) {
+        MissingPermissionsDialog(
+            isCallScreeningMissing = !isRoleGranted,
+            isSmsMissing = !isSmsPermissionGranted,
+            isNotifListenerMissing = !isNotifListenerGranted,
+            onRequestRole = onRequestRole,
+            onRequestSmsPermission = onRequestSmsPermission,
+            onRequestNotificationListener = onRequestNotificationListener,
+            onDismiss = { showMissingDialog = false }
+        )
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Tarjeta de Estado del Filtro
+        val allEssentialGranted = isRoleGranted && isSmsPermissionGranted && isNotifListenerGranted
         val cardColor = when {
-            !isRoleGranted -> Color(0xFF991B1B) // Rojo: Sin permiso
-            isProtectionEnabled -> Color(0xFF1E3A8A) // Azul: Protección activa
-            else -> Color(0xFFB45309) // Naranja: Pausada/Desactivada
+            !allEssentialGranted -> Color(0xFF991B1B)
+            isProtectionEnabled -> Color(0xFF1E3A8A)
+            else -> Color(0xFFB45309)
         }
 
         Card(
@@ -116,7 +169,7 @@ fun HomeScreen(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = when {
-                            !isRoleGranted -> "Permiso Inactivo"
+                            !allEssentialGranted -> "Permisos Incompletos"
                             isProtectionEnabled -> "Protección Activa"
                             else -> "Protección Pausada"
                         },
@@ -127,9 +180,9 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = when {
-                            !isRoleGranted -> "Debes otorgar el rol de Filtro de llamadas para bloquear automáticamente."
-                            isProtectionEnabled -> "El filtro previo a timbre está interceptando números spam en 0 repiques."
-                            else -> "El filtro automático está desactivado. Las llamadas entrantes ingresarán normalmente."
+                            !allEssentialGranted -> "Faltan permisos esenciales. Revisa la lista inferior para activar el filtro."
+                            isProtectionEnabled -> "El filtro previo a timbre y el interceptor SMS están funcionando 24/7."
+                            else -> "El filtro está pausado. Las llamadas y SMS ingresarán normalmente."
                         },
                         color = Color(0xFFE2E8F0),
                         fontSize = 14.sp
@@ -138,69 +191,150 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                if (isRoleGranted) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Switch(
-                            checked = isProtectionEnabled,
-                            onCheckedChange = { enabled ->
-                                isProtectionEnabled = enabled
-                                ProtectionPreferences.setProtectionEnabled(context, enabled)
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = Color(0xFF10B981),
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color(0xFF4B5563)
-                            )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Switch(
+                        checked = isProtectionEnabled,
+                        onCheckedChange = { enabled ->
+                            if (enabled) {
+                                if (PermissionChecker.areAllEssentialPermissionsGranted(context)) {
+                                    isProtectionEnabled = true
+                                    ProtectionPreferences.setProtectionEnabled(context, true)
+                                } else {
+                                    isProtectionEnabled = false
+                                    ProtectionPreferences.setProtectionEnabled(context, false)
+                                    showMissingDialog = true
+                                }
+                            } else {
+                                isProtectionEnabled = false
+                                ProtectionPreferences.setProtectionEnabled(context, false)
+                            }
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = Color(0xFF10B981),
+                            uncheckedThumbColor = Color.White,
+                            uncheckedTrackColor = Color(0xFF4B5563)
                         )
-                        Text(
-                            text = if (isProtectionEnabled) "ON" else "OFF",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.Shield,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(48.dp)
+                    )
+                    Text(
+                        text = if (isProtectionEnabled) "ON" else "OFF",
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
         }
 
-        if (!isRoleGranted) {
-            Button(
-                onClick = onRequestRole,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
-                shape = RoundedCornerShape(12.dp)
+        // Card de Checklist Granular de Permisos
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("Activar Filtro de Llamadas Predeterminado", color = Color.White, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Checklist de Permisos de Sistema",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                PermissionStatusRow(
+                    title = "Filtro de Llamadas Predeterminado",
+                    subtitle = "Requerido para silenciar llamadas en 0 repiques.",
+                    isGranted = isRoleGranted,
+                    icon = Icons.Default.PhoneInTalk,
+                    onGrantClick = onRequestRole
+                )
+
+                PermissionStatusRow(
+                    title = "Lectura e Interceptación de SMS",
+                    subtitle = "Requerido para detectar estafas y apuestas.",
+                    isGranted = isSmsPermissionGranted,
+                    icon = Icons.AutoMirrored.Filled.Message,
+                    onGrantClick = onRequestSmsPermission
+                )
+
+                PermissionStatusRow(
+                    title = "Silenciado de Notificaciones SMS",
+                    subtitle = "Requerido para ocultar notificaciones de spam.",
+                    isGranted = isNotifListenerGranted,
+                    icon = Icons.Default.Notifications,
+                    onGrantClick = onRequestNotificationListener
+                )
+
+                PermissionStatusRow(
+                    title = "Sin Restricción de Batería",
+                    subtitle = "Evita que Android cierre el filtro en segundo plano.",
+                    isGranted = isBatteryOptimIgnored,
+                    icon = Icons.Default.BatteryFull,
+                    onGrantClick = {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            runCatching {
+                                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                    data = Uri.parse("package:${context.packageName}")
+                                }
+                                context.startActivity(intent)
+                            }.onFailure {
+                                context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                            }
+                        }
+                    }
+                )
             }
         }
 
-        if (!isSmsPermissionGranted) {
-            Button(
-                onClick = onRequestSmsPermission,
+        // Tarjeta para Fabricantes Agresivos (Xiaomi / Huawei / Oppo / Vivo)
+        if (PermissionChecker.isAggressiveBackgroundManufacturer()) {
+            Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED)),
-                shape = RoundedCornerShape(12.dp)
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF451A03)),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Activar Detector y Alertas de SMS Spam", color = Color.White, fontWeight = FontWeight.Bold)
-            }
-        }
-
-        if (!isNotifListenerGranted) {
-            Button(
-                onClick = onRequestNotificationListener,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF059669)),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Activar Silenciado Automático de SMS Spam", color = Color.White, fontWeight = FontWeight.Bold)
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Warning,
+                            contentDescription = null,
+                            tint = Color(0xFFF59E0B),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Aviso para ${PermissionChecker.getManufacturerName()}",
+                            color = Color(0xFFFDE68A),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp
+                        )
+                    }
+                    Text(
+                        text = "Los teléfonos ${PermissionChecker.getManufacturerName()} cierran aplicaciones en segundo plano de forma agresiva. Para asegurar que SpamZero funcione 24/7, activa la opción 'Autoinicio'.",
+                        color = Color(0xFFFEF3C7),
+                        fontSize = 12.sp
+                    )
+                    Button(
+                        onClick = {
+                            val intent = PermissionChecker.getAutoStartIntent(context)
+                            runCatching { context.startActivity(intent) }.onFailure {
+                                Toast.makeText(context, "Abre Ajustes > Aplicaciones > SpamZero > Autoinicio", Toast.LENGTH_LONG).show()
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD97706)),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Configurar Autoinicio en ${PermissionChecker.getManufacturerName()}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    }
+                }
             }
         }
 
@@ -352,9 +486,9 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.width(12.dp))
                 Button(
                     onClick = {
-                        val intent = android.content.Intent(
-                            android.content.Intent.ACTION_VIEW,
-                            android.net.Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=omargonzalez76@gmail.com&currency_code=USD")
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=omargonzalez76@gmail.com&currency_code=USD")
                         )
                         context.startActivity(intent)
                     },
@@ -368,9 +502,69 @@ fun HomeScreen(
     }
 }
 
+@Composable
+private fun PermissionStatusRow(
+    title: String,
+    subtitle: String,
+    isGranted: Boolean,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onGrantClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = if (isGranted) Color(0xFF10B981) else Color(0xFFEF4444),
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Text(
+                    text = title,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = subtitle,
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        if (isGranted) {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = "Concedido",
+                tint = Color(0xFF10B981),
+                modifier = Modifier.size(20.dp)
+            )
+        } else {
+            Button(
+                onClick = onGrantClick,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626)),
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
+            ) {
+                Text("Activar", fontSize = 11.sp, color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
 
 @Composable
-fun MetricCard(title: String, value: String, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
+private fun MetricCard(title: String, value: String, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxHeight(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -398,18 +592,3 @@ fun MetricCard(title: String, value: String, icon: androidx.compose.ui.graphics.
         }
     }
 }
-
-private fun checkRoleGranted(context: Context): Boolean {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        val roleManager = context.getSystemService(Context.ROLE_SERVICE) as? RoleManager
-        return roleManager?.isRoleHeld(RoleManager.ROLE_CALL_SCREENING) ?: false
-    }
-    return true
-}
-
-private fun checkNotifListenerGranted(context: Context): Boolean {
-    val pkgName = context.packageName
-    val flat = android.provider.Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
-    return flat != null && flat.contains(pkgName)
-}
-
