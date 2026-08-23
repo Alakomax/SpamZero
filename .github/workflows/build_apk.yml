@@ -33,10 +33,22 @@ jobs:
         gradle-version: '8.2'
         cache-disabled: true
 
+    - name: Dar permisos de ejecución a Gradlew
+      run: chmod +x ./gradlew
+
     - name: Compilar APK Release Firmado
-      run: gradle assembleRelease --no-daemon --stacktrace
+      run: ./gradlew assembleRelease --no-daemon --stacktrace
+
+    - name: Verificar o crear RELEASE_NOTES.md
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        if [ ! -f RELEASE_NOTES.md ]; then
+          echo "# SpamZero ${GITHUB_REF_NAME}" > RELEASE_NOTES.md
+          echo "Novedades y mejoras en esta versión." >> RELEASE_NOTES.md
+        fi
 
     - name: Publicar Release Oficial en GitHub
+      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref_name }}
