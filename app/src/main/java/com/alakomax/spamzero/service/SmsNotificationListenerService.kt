@@ -6,10 +6,14 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.ContactsContract
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.core.app.NotificationCompat
 import com.alakomax.spamzero.MainActivity
 import com.alakomax.spamzero.data.db.AppDatabase
@@ -57,6 +61,12 @@ class SmsNotificationListenerService : NotificationListenerService() {
 
         val countryInfo = CountryUtils.getSimCountryInfo(applicationContext)
         val normalizedSender = PhoneUtils.normalizePhoneNumber(title, countryInfo.code)
+
+        if (isContact(applicationContext, title) || isContact(applicationContext, normalizedSender)) {
+            Log.d("SmsNotificationListener", "Remitente $title en Contactos. Notificación permitida.")
+            return
+        }
+
         val sanitizedSender = title.replace(Regex("[\\s\\-\\(\\)]"), "")
         val sanitizedNorm = normalizedSender.replace(Regex("[\\s\\-\\(\\)]"), "")
 
@@ -64,11 +74,14 @@ class SmsNotificationListenerService : NotificationListenerService() {
 
         var matchedRulePattern: String? = null
         for (rule in activeRules) {
-            if (PhoneUtils.matchesRegexPattern(normalizedSender, rule.pattern) ||
-                PhoneUtils.matchesRegexPattern(title, rule.pattern) ||
-                PhoneUtils.matchesRegexPattern(sanitizedNorm, rule.pattern) ||
-                PhoneUtils.matchesRegexPattern(sanitizedSender, rule.pattern) ||
-                PhoneUtils.matchesRegexPattern(fullBody, rule.pattern)) {
+            val matchesSender = PhoneUtils.matchesRegexPattern(normalizedSender, rule.pattern) ||
+                                PhoneUtils.matchesRegexPattern(title, rule.pattern) ||
+                                PhoneUtils.matchesRegexPattern(sanitizedNorm, rule.pattern) ||
+                                PhoneUtils.matchesRegexPattern(sanitizedSender, rule.pattern)
+
+            val matchesBody = rule.category == "Texto SMS" && PhoneUtils.matchesRegexPattern(fullBody, rule.pattern)
+
+            if (matchesSender || matchesBody) {
                 matchedRulePattern = rule.pattern
                 break
             }
@@ -104,6 +117,26 @@ class SmsNotificationListenerService : NotificationListenerService() {
                     Log.e("SmsNotificationListener", "Error insertando SMS en cuarentena: ${e.message}")
                 }
             }
+        }
+    }
+
+    private fun isContact(context: Context, number: String): Boolean {
+        if (number.isBlank()) return false
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            return false
+        }
+        return try {
+            val uri = Uri.withAppendedPath(
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(number)
+            )
+            val projection = arrayOf(ContactsContract.PhoneLookup._ID)
+            context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+                cursor.count > 0
+            } ?: false
+        } catch (e: Exception) {
+            Log.e("SmsNotificationListener", "Error al consultar Contactos: ${e.message}")
+            false
         }
     }
 

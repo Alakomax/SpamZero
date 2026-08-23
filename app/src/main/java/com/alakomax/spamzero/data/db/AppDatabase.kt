@@ -108,7 +108,6 @@ abstract class AppDatabase : RoomDatabase() {
                     "spam_quarantine_db"
                 )
                 .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
-                .fallbackToDestructiveMigration()
                 .build()
                 INSTANCE = instance
                 instance
