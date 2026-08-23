@@ -1,15 +1,16 @@
 ## [ESTADO ACTUAL] Última actualización: 2026-08-23 | Dominio: SpamZero Web Landing Page UI/UX & Android App v1.1.3 (LATAM)
-- Objetivo Activo: Publicación oficial de la versión `v1.1.3` en GitHub Releases y vinculación dinámica en la Landing Page web.
-- Última Acción: Corregidos los enlaces del botón "Descargar APK" en `docs/index.html` (Landing Page `alakomax.github.io/SpamZero/`) para apuntar a `https://github.com/Alakomax/SpamZero/releases/latest/download/app-release.apk` en lugar del binario estático local `SpamZero.apk` v1.1.0. Push a `main` completado.
-- Decisiones/Bloqueos: Publicación exclusiva en GitHub Releases + GitHub Pages + Obtainium + Play Store (Codeberg descartado según ERR-001).
+- Objetivo Activo: Aplicación de prompt de corrección de codificación UTF-8, firma debug y sanitización de receptores/servicios.
+- Última Acción: Aplicadas las correcciones en `SmsSpamReceiver.kt`, `.github/workflows/build_apk.yml`, `app/build.gradle.kts`, `LICENSE`, y verificado el soporte UTF-8 en `MainActivity.kt`, `SmsNotificationListenerService.kt` y `SpamCallScreeningService.kt`. Compilación `./gradlew assembleDebug` completada con ÉXITO en 1m 14s.
+- Decisiones/Bloqueos: Publicación en GitHub Pages + GitHub Releases + Obtainium + Play Store (Codeberg descartado según ERR-001).
 - Vínculo Marketing: `d:\Suma_Proyectos\Proyectos\.marketing\SpamQuarantine` (Espiras RRSS y Guiones).
-- Siguiente Paso: Verificación de descarga directa en landing page web.
+- Siguiente Paso: Commit y push de los cambios de sanitización y corrección si el usuario lo requiere.
 
 ## Historial Reciente
-- 2026-08-23: Corrección en `docs/index.html` para que el botón de la landing page descargue siempre el APK de la última versión de GitHub Releases.
-- 2026-08-23: Tag `v1.1.3` publicado en GitHub para compilación e instalación directa de testers.
-- 2026-08-23: Commit atómico `6af6cc8` registrado con correcciones de permisos asíncronos (`Dispatchers.IO`), visibilidad `<queries>`, verificación `ComponentName` y cierre de diálogo.
-- 2026-08-22: Refactorización integral de 8 puntos (seguridad de credenciales, deduplicación atómica SMS, migraciones Room, resiliencia ReDoS y CI/CD con gradlew wrapper).
-- 2026-08-21: Auditoría de seguridad y hardening: `allowBackup=false`, R8 + Resource Shrinking (2.3 MB) y tag `v1.1.0`.
+- 2026-08-23: Compilación de prueba `./gradlew assembleDebug` exitosa (BUILD SUCCESSFUL).
+- 2026-08-23: Aplicación del prompt de corrección UTF-8, adición de licencia MIT estándar y remoción de overriding de firma release en debug en `app/build.gradle.kts`.
+- 2026-08-23: Corrección de permiso `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` y fallback de intent en `HomeScreen.kt`. Commit `54122b7`.
+- 2026-08-23: Corrección y reemplazo del binario `docs/SpamZero.apk` a la v1.1.3 firmada (2.48 MB) en GitHub Pages, eliminando el 404.
+- 2026-08-23: Corrección en `docs/index.html` para enlazar directamente el binario v1.1.3 de la web.
+- 2026-08-23: Tag `v1.1.3` publicado en GitHub.
 
-- Último commit revisado: 9939342
+- Último commit revisado: 54122b7
