@@ -11,6 +11,8 @@ object ProtectionPreferences {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
+    private const val KEY_AUTOSTART_DISMISSED = "is_autostart_dismissed"
+
     /**
      * Devuelve si la protección automática de llamadas spam está activada.
      * Por defecto es true.
@@ -24,5 +26,19 @@ object ProtectionPreferences {
      */
     fun setProtectionEnabled(context: Context, enabled: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_PROTECTION_ENABLED, enabled).apply()
+    }
+
+    /**
+     * Devuelve si el aviso de Autoinicio para Xiaomi/fabricantes fue configurado/descartado.
+     */
+    fun isAutostartDismissed(context: Context): Boolean {
+        return getPrefs(context).getBoolean(KEY_AUTOSTART_DISMISSED, false)
+    }
+
+    /**
+     * Guarda el estado de autoinicio descartado.
+     */
+    fun setAutostartDismissed(context: Context, dismissed: Boolean) {
+        getPrefs(context).edit().putBoolean(KEY_AUTOSTART_DISMISSED, dismissed).apply()
     }
 }

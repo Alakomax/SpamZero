@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BatteryFull
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Notifications
@@ -20,6 +22,8 @@ import androidx.compose.material.icons.filled.PhoneInTalk
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,6 +62,10 @@ fun HomeScreen(
     var isSmsPermissionGranted by remember { mutableStateOf(PermissionChecker.isSmsPermissionGranted(context)) }
     var isNotifListenerGranted by remember { mutableStateOf(PermissionChecker.isNotificationListenerGranted(context)) }
     var isBatteryOptimIgnored by remember { mutableStateOf(PermissionChecker.isBatteryOptimizationIgnored(context)) }
+    var isAutostartDismissed by remember { mutableStateOf(ProtectionPreferences.isAutostartDismissed(context)) }
+
+    val allSystemPermissionsGranted = isRoleGranted && isSmsPermissionGranted && isNotifListenerGranted && isBatteryOptimIgnored
+    var isChecklistExpanded by remember { mutableStateOf(!allSystemPermissionsGranted) }
 
     var isProtectionEnabled by remember { mutableStateOf(ProtectionPreferences.isProtectionEnabled(context)) }
     var showMissingDialog by remember { mutableStateOf(false) }
@@ -85,9 +93,16 @@ fun HomeScreen(
         isSmsPermissionGranted = sms
         isNotifListenerGranted = notif
         isBatteryOptimIgnored = battery
+        isAutostartDismissed = ProtectionPreferences.isAutostartDismissed(context)
         val allEssentialGranted = role && sms && notif
         val userPref = ProtectionPreferences.isProtectionEnabled(context)
         isProtectionEnabled = userPref && allEssentialGranted
+    }
+
+    LaunchedEffect(allSystemPermissionsGranted) {
+        if (allSystemPermissionsGranted) {
+            isChecklistExpanded = false
+        }
     }
 
     DisposableEffect(lifecycleOwner) {
@@ -224,7 +239,7 @@ fun HomeScreen(
             }
         }
 
-        // Card de Checklist Granular de Permisos
+        // Card de Checklist Granular de Permisos (Desplegable)
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -236,78 +251,120 @@ fun HomeScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    text = "Checklist de Permisos de Sistema",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                val grantedCount = listOf(isRoleGranted, isSmsPermissionGranted, isNotifListenerGranted, isBatteryOptimIgnored).count { it }
+                val totalCount = 4
 
-                PermissionStatusRow(
-                    title = "Filtro de Llamadas Predeterminado",
-                    subtitle = "Requerido para silenciar llamadas en 0 repiques.",
-                    isGranted = isRoleGranted,
-                    icon = Icons.Default.PhoneInTalk,
-                    onGrantClick = onRequestRole
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isChecklistExpanded = !isChecklistExpanded },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Checklist de Permisos de Sistema",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Surface(
+                            color = if (grantedCount == totalCount) Color(0xFF10B981).copy(alpha = 0.15f) else Color(0xFFEF4444).copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                text = if (grantedCount == totalCount) "✓ 4/4 Activos" else "$grantedCount/$totalCount Activos",
+                                color = if (grantedCount == totalCount) Color(0xFF10B981) else Color(0xFFEF4444),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
 
-                PermissionStatusRow(
-                    title = "Lectura e Interceptación de SMS",
-                    subtitle = "Requerido para detectar estafas y apuestas.",
-                    isGranted = isSmsPermissionGranted,
-                    icon = Icons.AutoMirrored.Filled.Message,
-                    onGrantClick = onRequestSmsPermission
-                )
+                    IconButton(
+                        onClick = { isChecklistExpanded = !isChecklistExpanded },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isChecklistExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                            contentDescription = if (isChecklistExpanded) "Minimizar checklist" else "Expandir checklist",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
 
-                PermissionStatusRow(
-                    title = "Silenciado de Notificaciones SMS",
-                    subtitle = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !isNotifListenerGranted)
-                        "Si la opción sale gris: Ajustes > Aplicaciones > SpamZero > 3 puntos (⋮) > Permitir ajustes restringidos."
-                    else
-                        "Requerido para ocultar notificaciones de spam.",
-                    isGranted = isNotifListenerGranted,
-                    icon = Icons.Default.Notifications,
-                    onGrantClick = onRequestNotificationListener
-                )
+                if (isChecklistExpanded) {
+                    PermissionStatusRow(
+                        title = "Filtro de Llamadas Predeterminado",
+                        subtitle = "Requerido para silenciar llamadas en 0 repiques.",
+                        isGranted = isRoleGranted,
+                        icon = Icons.Default.PhoneInTalk,
+                        onGrantClick = onRequestRole
+                    )
 
-                PermissionStatusRow(
-                    title = "Sin Restricción de Batería",
-                    subtitle = "Evita que Android cierre el filtro en segundo plano.",
-                    isGranted = isBatteryOptimIgnored,
-                    icon = Icons.Default.BatteryFull,
-                    onGrantClick = {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            runCatching {
-                                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                                    data = Uri.parse("package:${context.packageName}")
-                                }
-                                context.startActivity(intent)
-                            }.onFailure {
+                    PermissionStatusRow(
+                        title = "Lectura e Interceptación de SMS",
+                        subtitle = "Requerido para detectar estafas y apuestas.",
+                        isGranted = isSmsPermissionGranted,
+                        icon = Icons.AutoMirrored.Filled.Message,
+                        onGrantClick = onRequestSmsPermission
+                    )
+
+                    PermissionStatusRow(
+                        title = "Silenciado de Notificaciones SMS",
+                        subtitle = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !isNotifListenerGranted)
+                            "Si la opción sale gris: Ajustes > Aplicaciones > SpamZero > 3 puntos (⋮) > Permitir ajustes restringidos."
+                        else
+                            "Requerido para ocultar notificaciones de spam.",
+                        isGranted = isNotifListenerGranted,
+                        icon = Icons.Default.Notifications,
+                        onGrantClick = onRequestNotificationListener
+                    )
+
+                    PermissionStatusRow(
+                        title = "Sin Restricción de Batería",
+                        subtitle = "Evita que Android cierre el filtro en segundo plano.",
+                        isGranted = isBatteryOptimIgnored,
+                        icon = Icons.Default.BatteryFull,
+                        onGrantClick = {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 runCatching {
-                                    val fallbackIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = Uri.fromParts("package", context.packageName, null)
+                                    val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                        data = Uri.parse("package:${context.packageName}")
                                     }
-                                    context.startActivity(fallbackIntent)
+                                    context.startActivity(intent)
                                 }.onFailure {
                                     runCatching {
-                                        context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                                        val fallbackIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                            data = Uri.fromParts("package", context.packageName, null)
+                                        }
+                                        context.startActivity(fallbackIntent)
                                     }.onFailure {
-                                        Toast.makeText(
-                                            context,
-                                            "Configura la batería en Sin Restricciones en Ajustes > Aplicaciones > SpamZero",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        runCatching {
+                                            context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                                        }.onFailure {
+                                            Toast.makeText(
+                                                context,
+                                                "Configura la batería en Sin Restricciones en Ajustes > Aplicaciones > SpamZero",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
 
         // Tarjeta para Fabricantes Agresivos (Xiaomi / Huawei / Oppo / Vivo)
-        if (PermissionChecker.isAggressiveBackgroundManufacturer()) {
+        if (PermissionChecker.isAggressiveBackgroundManufacturer() && !isAutostartDismissed) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF451A03)),
@@ -317,20 +374,42 @@ fun HomeScreen(
                     modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Warning,
-                            contentDescription = null,
-                            tint = Color(0xFFF59E0B),
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Aviso para ${PermissionChecker.getManufacturerName()}",
-                            color = Color(0xFFFDE68A),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp
-                        )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = Color(0xFFF59E0B),
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Aviso para ${PermissionChecker.getManufacturerName()}",
+                                color = Color(0xFFFDE68A),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 15.sp
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                ProtectionPreferences.setAutostartDismissed(context, true)
+                                isAutostartDismissed = true
+                            },
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Ocultar aviso",
+                                tint = Color(0xFFFDE68A)
+                            )
+                        }
                     }
                     Text(
                         text = "Los teléfonos ${PermissionChecker.getManufacturerName()} cierran aplicaciones en segundo plano de forma agresiva. Para asegurar que SpamZero funcione 24/7, activa la opción 'Autoinicio'.",
@@ -339,6 +418,8 @@ fun HomeScreen(
                     )
                     Button(
                         onClick = {
+                            ProtectionPreferences.setAutostartDismissed(context, true)
+                            isAutostartDismissed = true
                             val intent = PermissionChecker.getAutoStartIntent(context)
                             runCatching { context.startActivity(intent) }.onFailure {
                                 Toast.makeText(context, "Abre Ajustes > Aplicaciones > SpamZero > Autoinicio", Toast.LENGTH_LONG).show()
