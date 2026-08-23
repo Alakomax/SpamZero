@@ -33,9 +33,10 @@ object PermissionChecker {
     fun isNotificationListenerGranted(context: Context): Boolean {
         val enabledPackages = NotificationManagerCompat.getEnabledListenerPackages(context)
         if (enabledPackages.contains(context.packageName)) return true
-
-        val flat = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
-        return flat != null && flat.contains(context.packageName)
+        val flat = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners") ?: return false
+        return flat.split(":").any { componentStr ->
+            android.content.ComponentName.unflattenFromString(componentStr)?.packageName == context.packageName
+        }
     }
 
     fun isBatteryOptimizationIgnored(context: Context): Boolean {

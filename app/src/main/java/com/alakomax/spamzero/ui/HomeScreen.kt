@@ -38,7 +38,9 @@ import com.alakomax.spamzero.util.PermissionChecker
 import com.alakomax.spamzero.util.ProtectionPreferences
 import com.alakomax.spamzero.util.UpdateInfo
 import com.alakomax.spamzero.util.UpdateManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun HomeScreen(
@@ -79,31 +81,27 @@ fun HomeScreen(
         val sms = PermissionChecker.isSmsPermissionGranted(context)
         val notif = PermissionChecker.isNotificationListenerGranted(context)
         val battery = PermissionChecker.isBatteryOptimizationIgnored(context)
-
         isRoleGranted = role
         isSmsPermissionGranted = sms
         isNotifListenerGranted = notif
         isBatteryOptimIgnored = battery
-
         val allEssentialGranted = role && sms && notif
-        val currentPref = ProtectionPreferences.isProtectionEnabled(context)
-
-        if (currentPref && !allEssentialGranted) {
-            ProtectionPreferences.setProtectionEnabled(context, false)
-            isProtectionEnabled = false
-        } else {
-            isProtectionEnabled = currentPref && allEssentialGranted
-        }
+        val userPref = ProtectionPreferences.isProtectionEnabled(context)
+        isProtectionEnabled = userPref && allEssentialGranted
     }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 refreshPermissionStates()
-                scope.launch {
+                scope.launch(Dispatchers.IO) {
                     val db = AppDatabase.getDatabase(context)
-                    blockedCount = db.quarantineDao().getBlockedCount() + db.smsQuarantineDao().getSmsBlockedCount()
-                    rulesCount = db.ruleDao().getRuleCount()
+                    val blocked = db.quarantineDao().getBlockedCount() + db.smsQuarantineDao().getSmsBlockedCount()
+                    val rules = db.ruleDao().getRuleCount()
+                    withContext(Dispatchers.Main) {
+                        blockedCount = blocked
+                        rulesCount = rules
+                    }
                 }
             }
         }

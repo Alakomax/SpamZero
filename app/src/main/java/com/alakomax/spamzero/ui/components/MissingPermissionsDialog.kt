@@ -57,7 +57,10 @@ fun MissingPermissionsDialog(
                         description = "Necesario para cortar llamadas spam antes de sonar.",
                         buttonText = "Conceder Rol",
                         buttonColor = Color(0xFF2563EB),
-                        onClick = onRequestRole
+                        onClick = {
+                            onRequestRole()
+                            onDismiss()
+                        }
                     )
                 }
 
@@ -67,7 +70,10 @@ fun MissingPermissionsDialog(
                         description = "Requerido para analizar remitentes y enlaces sospechosos.",
                         buttonText = "Permitir SMS",
                         buttonColor = Color(0xFF7C3AED),
-                        onClick = onRequestSmsPermission
+                        onClick = {
+                            onRequestSmsPermission()
+                            onDismiss()
+                        }
                     )
                 }
 
@@ -77,7 +83,10 @@ fun MissingPermissionsDialog(
                         description = "Necesario para ocultar alertas de SMS spam en segundo plano.",
                         buttonText = "Activar Escucha",
                         buttonColor = Color(0xFF059669),
-                        onClick = onRequestNotificationListener
+                        onClick = {
+                            onRequestNotificationListener()
+                            onDismiss()
+                        }
                     )
                 }
             }
