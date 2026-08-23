@@ -261,7 +261,10 @@ fun HomeScreen(
 
                 PermissionStatusRow(
                     title = "Silenciado de Notificaciones SMS",
-                    subtitle = "Requerido para ocultar notificaciones de spam.",
+                    subtitle = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !isNotifListenerGranted)
+                        "Si la opción sale gris: Ajustes > Aplicaciones > SpamZero > 3 puntos (⋮) > Permitir ajustes restringidos."
+                    else
+                        "Requerido para ocultar notificaciones de spam.",
                     isGranted = isNotifListenerGranted,
                     icon = Icons.Default.Notifications,
                     onGrantClick = onRequestNotificationListener

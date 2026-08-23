@@ -89,7 +89,15 @@ class MainActivity : ComponentActivity() {
         try {
             val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
             startActivity(intent)
-            Toast.makeText(this, "Busca SpamZero y activa el permiso para silenciar SMS spam.", Toast.LENGTH_LONG).show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Toast.makeText(
+                    this,
+                    "Si el botón está en gris (Android 13+): Ve a Ajustes > Aplicaciones > SpamZero > menú 3 puntos (⋮) > 'Permitir ajustes restringidos'.",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                Toast.makeText(this, "Busca SpamZero y activa el permiso para silenciar SMS spam.", Toast.LENGTH_LONG).show()
+            }
         } catch (e: Exception) {
             Toast.makeText(this, "Abre Ajustes > Notificaciones > Acceso a notificaciones.", Toast.LENGTH_LONG).show()
         }
