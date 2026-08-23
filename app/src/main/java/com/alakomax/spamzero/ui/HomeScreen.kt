@@ -280,7 +280,22 @@ fun HomeScreen(
                                 }
                                 context.startActivity(intent)
                             }.onFailure {
-                                context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                                runCatching {
+                                    val fallbackIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        data = Uri.fromParts("package", context.packageName, null)
+                                    }
+                                    context.startActivity(fallbackIntent)
+                                }.onFailure {
+                                    runCatching {
+                                        context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                                    }.onFailure {
+                                        Toast.makeText(
+                                            context,
+                                            "Configura la batería en Sin Restricciones en Ajustes > Aplicaciones > SpamZero",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
                             }
                         }
                     }
