@@ -145,7 +145,7 @@ fun MainAppStructure(
             TopAppBar(
                 title = {
                     Text(
-                        text = "SpamZero ${countryInfo.flagEmoji}",
+                        text = "SpamZero v${BuildConfig.VERSION_NAME} ${countryInfo.flagEmoji}",
                         fontWeight = FontWeight.Bold
                     )
                 },

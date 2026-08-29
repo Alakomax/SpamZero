@@ -72,9 +72,9 @@ fun HomeScreen(
 
     val currentVersion = remember {
         try {
-            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "1.1.3"
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: com.alakomax.spamzero.BuildConfig.VERSION_NAME
         } catch (e: Exception) {
-            "1.1.3"
+            com.alakomax.spamzero.BuildConfig.VERSION_NAME
         }
     }
 
