@@ -48,9 +48,17 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val smsGranted = permissions[android.Manifest.permission.RECEIVE_SMS] ?: false
-        if (smsGranted) {
-            Toast.makeText(this, "¡Protección contra SMS Spam activada!", Toast.LENGTH_SHORT).show()
-        } else {
+        val contactsGranted = permissions[android.Manifest.permission.READ_CONTACTS] ?: false
+
+        if (smsGranted && contactsGranted) {
+            Toast.makeText(this, "¡Protección contra SMS Spam y filtro de contactos activados!", Toast.LENGTH_SHORT).show()
+        } else if (!contactsGranted) {
+            Toast.makeText(
+                this,
+                "Advertencia: El permiso de Contactos es imprescindible para evitar bloquear a sus contactos conocidos.",
+                Toast.LENGTH_LONG
+            ).show()
+        } else if (!smsGranted) {
             Toast.makeText(this, "Se requiere permiso de SMS para detectar mensajes spam.", Toast.LENGTH_LONG).show()
         }
     }
@@ -59,6 +67,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         SpamRuleCache.prewarmCacheAsync(applicationContext)
+
+        val hasContactsPermission = androidx.core.content.ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.READ_CONTACTS
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+
+        if (!hasContactsPermission) {
+            requestSmsPermissions()
+        }
 
         val prefs = getSharedPreferences("app_settings", MODE_PRIVATE)
         val defaultDark = prefs.getBoolean("is_dark_mode", true)
@@ -104,7 +121,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestSmsPermissions() {
-        val permissions = mutableListOf(android.Manifest.permission.RECEIVE_SMS)
+        val permissions = mutableListOf(
+            android.Manifest.permission.RECEIVE_SMS,
+            android.Manifest.permission.READ_CONTACTS
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissions.add(android.Manifest.permission.POST_NOTIFICATIONS)
         }

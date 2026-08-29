@@ -42,6 +42,12 @@ jobs:
     - name: Compilar Verificación Debug
       if: "!startsWith(github.ref, 'refs/tags/')"
       run: ./gradlew assembleDebug --no-daemon --stacktrace
+    - name: Subir APK Debug como Artefacto listo para descarga
+      if: "!startsWith(github.ref, 'refs/tags/')"
+      uses: actions/upload-artifact@v4
+      with:
+        name: SpamZero-APK-Debug
+        path: app/build/outputs/apk/debug/app-debug.apk
     - name: Verificar o crear RELEASE_NOTES.md
       if: startsWith(github.ref, 'refs/tags/')
       run: |

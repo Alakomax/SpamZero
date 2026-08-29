@@ -24,10 +24,15 @@ object PermissionChecker {
     }
 
     fun isSmsPermissionGranted(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
+        val hasSms = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.RECEIVE_SMS
         ) == PackageManager.PERMISSION_GRANTED
+        val hasContacts = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
+        return hasSms && hasContacts
     }
 
     fun isNotificationListenerGranted(context: Context): Boolean {

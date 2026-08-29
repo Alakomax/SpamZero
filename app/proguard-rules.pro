@@ -10,3 +10,4 @@
 }
 -keep class com.alakomax.spamzero.data.model.** { *; }
 -keep class com.alakomax.spamzero.data.db.** { *; }
+-dontwarn androidx.room.paging.**
