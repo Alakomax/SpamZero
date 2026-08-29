@@ -53,6 +53,10 @@ class SmsNotificationListenerService : NotificationListenerService() {
         val bigText = extras.getCharSequence(Notification.EXTRA_BIG_TEXT)?.toString() ?: ""
         val fullBody = if (bigText.isNotBlank()) bigText else text
         if (title.isBlank() && fullBody.isBlank()) return
+        if (ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            Log.w("SmsNotificationListener", "READ_CONTACTS no concedido. Fail-safe: No se interceptan SMS.")
+            return
+        }
         val countryInfo = CountryUtils.getSimCountryInfo(applicationContext)
         val normalizedSender = PhoneUtils.normalizePhoneNumber(title, countryInfo.code)
         if (isContact(applicationContext, title) || isContact(applicationContext, normalizedSender)) {
@@ -110,20 +114,31 @@ class SmsNotificationListenerService : NotificationListenerService() {
         }
     }
 
-    private fun isContact(context: Context, number: String): Boolean {
-        if (number.isBlank()) return false
+    private fun isContact(context: Context, queryStr: String): Boolean {
+        if (queryStr.isBlank()) return false
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             return false
         }
         return try {
-            val uri = Uri.withAppendedPath(
-                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-                Uri.encode(number)
-            )
-            val projection = arrayOf(ContactsContract.PhoneLookup._ID)
-            context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
-                cursor.count > 0
-            } ?: false
+            val isName = queryStr.any { it.isLetter() }
+            if (isName) {
+                val uri = ContactsContract.Contacts.CONTENT_URI
+                val projection = arrayOf(ContactsContract.Contacts._ID)
+                val selection = "${ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} = ? OR ${ContactsContract.Contacts.DISPLAY_NAME} = ?"
+                val selectionArgs = arrayOf(queryStr, queryStr)
+                context.contentResolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
+                    cursor.count > 0
+                } ?: false
+            } else {
+                val uri = Uri.withAppendedPath(
+                    ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                    Uri.encode(queryStr)
+                )
+                val projection = arrayOf(ContactsContract.PhoneLookup._ID)
+                context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+                    cursor.count > 0
+                } ?: false
+            }
         } catch (e: Exception) {
             Log.e("SmsNotificationListener", "Error al consultar Contactos: ${e.message}")
             false

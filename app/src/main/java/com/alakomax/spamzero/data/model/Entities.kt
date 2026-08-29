@@ -1,8 +1,10 @@
 package com.alakomax.spamzero.data.model
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Keep
 @Entity(tableName = "spam_rules")
 data class RuleEntity(
     @PrimaryKey(autoGenerate = true)
@@ -15,6 +17,7 @@ data class RuleEntity(
     val createdAt: Long = System.currentTimeMillis()
 )
 
+@Keep
 @Entity(tableName = "quarantine_logs")
 data class QuarantineLogEntity(
     @PrimaryKey(autoGenerate = true)
@@ -26,6 +29,7 @@ data class QuarantineLogEntity(
     val isReviewed: Boolean = false
 )
 
+@Keep
 @Entity(tableName = "sms_quarantine_logs")
 data class SmsQuarantineLogEntity(
     @PrimaryKey(autoGenerate = true)

@@ -32,12 +32,16 @@ jobs:
       run: |
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release.jks
     - name: Compilar APK Release Firmado
+      if: startsWith(github.ref, 'refs/tags/')
       run: ./gradlew assembleRelease --no-daemon --stacktrace
       env:
         KEYSTORE_FILE: release.jks
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    - name: Compilar Verificación Debug
+      if: "!startsWith(github.ref, 'refs/tags/')"
+      run: ./gradlew assembleDebug --no-daemon --stacktrace
     - name: Verificar o crear RELEASE_NOTES.md
       if: startsWith(github.ref, 'refs/tags/')
       run: |

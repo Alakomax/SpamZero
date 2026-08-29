@@ -2,6 +2,13 @@
 
 Haz clic en **`app-release.apk`** para descargar e instalar la aplicación directamente en tu teléfono.
 
+#### 🚀 Novedades v1.1.4 (Búsqueda de Contactos por Nombre, Fail-Safe de Permisos, Room R8 & Corrección CI/CD):
+
+* 👤 **Búsqueda por Nombre de Contacto en SMS:** Reconocimiento automático de nombres de contacto en notificaciones SMS (ej: "Mamá", "Juan Pérez") mediante `DISPLAY_NAME_PRIMARY`. Si el remitente es un contacto confirmado en la agenda, se omiten inmediatamente las reglas de filtrado de texto.
+* 🛡️ **Estrategia Fail-Safe por Permisos:** En caso de que el permiso `READ_CONTACTS` no esté concedido, la aplicación activa un modo seguro que permite el paso de llamadas y SMS sin realizar bloqueos accidentales.
+* 📦 **Ofuscación R8 & Room Database:** Preservación de entidades y DAOs mediante la anotación `@Keep` y reglas Proguard, garantizando la estabilidad de la base de datos en versiones de producción.
+* ⚡ **Optimización de Batería y Recursos:** Eliminación de `SmsSpamReceiver` redundante para evitar llamadas de broadcast innecesarias.
+
 #### 🚀 Novedades v1.1.3 (Soporte de Autoinicio en Fabricantes, Permisos Asíncronos & Corrección UI):
 
 * 🛠️ **Configuración de Autoinicio para Xiaomi, Huawei, Oppo y Vivo:** Detección automática del fabricante e inclusión del bloque `<queries>` en `AndroidManifest.xml` para abrir directamente la pantalla de gestión de segundo plano.

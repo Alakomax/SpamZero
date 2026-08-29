@@ -34,6 +34,11 @@ class SpamCallScreeningService : CallScreeningService() {
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
+        if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            Log.w("SpamScreening", "READ_CONTACTS no concedido. Fail-safe: Llamada permitida sin evaluar.")
+            respondToCall(callDetails, CallResponse.Builder().build())
+            return
+        }
         val countryInfo = CountryUtils.getSimCountryInfo(applicationContext)
         val normalizedNumber = PhoneUtils.normalizePhoneNumber(rawNumber, countryInfo.code)
         Log.d("SpamScreening", "Llamada entrante evaluada [${countryInfo.code} ${countryInfo.flagEmoji}]: Raw=$rawNumber -> E.164=$normalizedNumber")
@@ -93,6 +98,9 @@ class SpamCallScreeningService : CallScreeningService() {
 
     private fun isContact(context: Context, number: String): Boolean {
         if (number.isBlank()) return false
+        if (androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CONTACTS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            return false
+        }
         return try {
             val uri = Uri.withAppendedPath(
                 ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
