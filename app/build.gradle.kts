@@ -14,8 +14,8 @@ android {
         applicationId = "com.alakomax.spamzero"
         minSdk = 29
         targetSdk = 34
-        versionCode = 17
-        versionName = "1.1.3"
+        versionCode = 18
+        versionName = "1.1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -31,7 +31,7 @@ android {
 
     val keystoreFilePath = localProperties.getProperty("KEYSTORE_FILE")
         ?: System.getenv("KEYSTORE_FILE")
-        ?: "../release.jks"
+        ?: "release.jks"
     val keystorePassword = localProperties.getProperty("KEYSTORE_PASSWORD")
         ?: System.getenv("KEYSTORE_PASSWORD")
         ?: ""
@@ -41,10 +41,8 @@ android {
     val keyPasswordStr = localProperties.getProperty("KEY_PASSWORD")
         ?: System.getenv("KEY_PASSWORD")
         ?: ""
-
-    val releaseKeystoreFile = file(keystoreFilePath)
+    val releaseKeystoreFile = rootProject.file(keystoreFilePath)
     val hasReleaseKey = releaseKeystoreFile.exists() && keystorePassword.isNotBlank()
-
     signingConfigs {
         create("releaseSigning") {
             if (hasReleaseKey) {
@@ -57,7 +55,6 @@ android {
             }
         }
     }
-
     buildTypes {
         debug {
             // Mantener firma predeterminada de depuración de Android

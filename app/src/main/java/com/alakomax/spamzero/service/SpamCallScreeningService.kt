@@ -25,35 +25,30 @@ class SpamCallScreeningService : CallScreeningService() {
     override fun onScreenCall(callDetails: Call.Details) {
         val rawHandle: Uri? = callDetails.handle
         val rawNumber: String = rawHandle?.schemeSpecificPart ?: ""
-
         if (rawNumber.isBlank()) {
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
-
         if (!ProtectionPreferences.isProtectionEnabled(applicationContext)) {
             Log.d("SpamScreening", "Protección deshabilitada por el usuario. Llamada permitida: $rawNumber")
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
-
         val countryInfo = CountryUtils.getSimCountryInfo(applicationContext)
         val normalizedNumber = PhoneUtils.normalizePhoneNumber(rawNumber, countryInfo.code)
         Log.d("SpamScreening", "Llamada entrante evaluada [${countryInfo.code} ${countryInfo.flagEmoji}]: Raw=$rawNumber -> E.164=$normalizedNumber")
-
         if (isContact(this, rawNumber) || isContact(this, normalizedNumber)) {
             Log.d("SpamScreening", "Número $normalizedNumber está en Contactos. Permitido.")
             respondToCall(callDetails, CallResponse.Builder().build())
             return
         }
-
         val activeRules = SpamRuleCache.getActiveRulesSync(applicationContext)
-
         val sanitizedRaw = rawNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
         val sanitizedNorm = normalizedNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
-
         var matchedRule: RuleEntity? = null
         for (rule in activeRules) {
+            // Excluir reglas de texto SMS para evitar falsos positivos en llamadas
+            if (rule.category == "Texto SMS") continue
             if (PhoneUtils.matchesRegexPattern(normalizedNumber, rule.pattern) ||
                 PhoneUtils.matchesRegexPattern(rawNumber, rule.pattern) ||
                 PhoneUtils.matchesRegexPattern(sanitizedNorm, rule.pattern) ||
@@ -62,25 +57,19 @@ class SpamCallScreeningService : CallScreeningService() {
                 break
             }
         }
-
         if (matchedRule != null) {
             Log.w("SpamScreening", "LLAMADA SPAM BLOQUEADA (0 REPIQUES): $normalizedNumber por patrón ${matchedRule.pattern}")
-
             val responseBuilder = CallResponse.Builder()
                 .setDisallowCall(true)
                 .setRejectCall(true)
-                .setSkipCallLog(false)
-
+                .setSkipCallLog(true)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 responseBuilder.setSilenceCall(true)
             }
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 responseBuilder.setSkipNotification(true)
             }
-
             respondToCall(callDetails, responseBuilder.build())
-
             val matchedPattern = matchedRule.pattern
             serviceScope.launch {
                 try {

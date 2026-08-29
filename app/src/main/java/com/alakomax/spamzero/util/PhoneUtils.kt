@@ -24,6 +24,14 @@ object PhoneUtils {
             return "+$digits"
         }
 
+        // Reconocer códigos de país comunes de llamadas/SMS spam entrantes sin signo '+'
+        val commonCountryCodes = listOf("34", "44", "57", "54", "58", "52", "51", "1")
+        for (cc in commonCountryCodes) {
+            if (digits.startsWith(cc) && digits.length >= 9 && cc != prefixNoPlus) {
+                return "+$digits"
+            }
+        }
+
         if (digits.startsWith("0") && digits.length > 1) {
             digits = digits.removePrefix("0")
         }
@@ -35,7 +43,9 @@ object PhoneUtils {
             if ((digits.startsWith("600") || digits.startsWith("800") || digits.startsWith("80") || digits.startsWith("809")) && digits.length >= 8) {
                 return "+56$digits"
             }
-            return "+56$digits"
+            if (digits.length == 8 || digits.length == 9) {
+                return "+56$digits"
+            }
         }
 
         return if (country.dialCode.isNotBlank()) "${country.dialCode}$digits" else "+$digits"
@@ -176,10 +186,10 @@ object PhoneUtils {
                     countryCode = "CL"
                 ),
                 DefaultRule(
-                    pattern = "^(\\+?56|0)?9(288\\d|443\\d|434\\d|523\\d|44\\d{2})\\d{4}$",
+                    pattern = "^(\\+?56|0)?9(288\\d|443\\d|434\\d|523\\d|746\\d|44\\d{2})\\d{4}$",
                     title = "Bloque Móvil Call Centers y Troncales SIP",
                     category = "📞 Llamadas Nacionales",
-                    description = "Intercepta bloques de celulares corporativos (9 4343, 9 5233, 9 4434, 9 2882) de telemercadeo.",
+                    description = "Intercepta bloques de celulares corporativos (9 4343, 9 5233, 9 7465, 9 4434, 9 2882) de telemercadeo.",
                     countryCode = "CL"
                 ),
                 DefaultRule(

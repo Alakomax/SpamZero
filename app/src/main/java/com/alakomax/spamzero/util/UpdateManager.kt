@@ -60,7 +60,7 @@ object UpdateManager {
                 }
 
                 if (apkDownloadUrl.isBlank() && tagName.isNotBlank()) {
-                    apkDownloadUrl = "https://github.com/Alakomax/SpamZero/releases/download/$tagName/app-debug.apk"
+                    apkDownloadUrl = "https://github.com/Alakomax/SpamZero/releases/download/$tagName/app-release.apk"
                 }
 
                 val cleanLatest = tagName.removePrefix("v").trim()
@@ -100,12 +100,40 @@ object UpdateManager {
                 destinationFile.delete()
             }
 
-            val url = URL(downloadUrl)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
-            connection.connectTimeout = 10000
-            connection.readTimeout = 10000
-            connection.connect()
+            var currentUrl = downloadUrl
+            var connection: HttpURLConnection? = null
+            var redirects = 0
+            val maxRedirects = 5
+
+            while (redirects < maxRedirects) {
+                val url = URL(currentUrl)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "GET"
+                conn.connectTimeout = 10000
+                conn.readTimeout = 10000
+                conn.instanceFollowRedirects = true
+                conn.setRequestProperty("User-Agent", "SpamZero-App")
+
+                val status = conn.responseCode
+                if (status == HttpURLConnection.HTTP_MOVED_TEMP ||
+                    status == HttpURLConnection.HTTP_MOVED_PERM ||
+                    status == HttpURLConnection.HTTP_SEE_OTHER ||
+                    status == 307 || status == 308) {
+                    val redirectUrl = conn.getHeaderField("Location")
+                    if (!redirectUrl.isNullOrBlank()) {
+                        currentUrl = redirectUrl
+                        redirects++
+                        conn.disconnect()
+                        continue
+                    }
+                }
+                connection = conn
+                break
+            }
+
+            if (connection == null) {
+                throw Exception("No se pudo establecer conexión tras $maxRedirects redirecciones.")
+            }
 
             val fileLength = connection.contentLength
             val inputStream = connection.inputStream
@@ -129,6 +157,7 @@ object UpdateManager {
             outputStream.flush()
             outputStream.close()
             inputStream.close()
+            connection.disconnect()
 
             withContext(Dispatchers.Main) {
                 promptInstall(context, destinationFile)
