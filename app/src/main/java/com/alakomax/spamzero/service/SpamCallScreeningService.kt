@@ -99,6 +99,7 @@ class SpamCallScreeningService : CallScreeningService() {
     private fun isContact(context: Context, number: String): Boolean {
         if (number.isBlank()) return false
         if (androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CONTACTS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            Log.w("SpamScreening", "READ_CONTACTS no concedido. Fail-safe activo.")
             return false
         }
         return try {

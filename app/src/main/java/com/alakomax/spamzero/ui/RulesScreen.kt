@@ -1,5 +1,6 @@
 package com.alakomax.spamzero.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DownloadForOffline
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -21,8 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alakomax.spamzero.data.db.AppDatabase
 import com.alakomax.spamzero.data.model.RuleEntity
+import com.alakomax.spamzero.ui.components.ImportSystemBlockedDialog
 import com.alakomax.spamzero.util.CountryUtils
+import com.alakomax.spamzero.util.ImportedBlockSuggestion
 import com.alakomax.spamzero.util.SpamRuleCache
+import com.alakomax.spamzero.util.SystemBlocklistImporter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,6 +36,10 @@ fun RulesScreen() {
     var rules by remember { mutableStateOf<List<RuleEntity>>(emptyList()) }
     var showDialog by remember { mutableStateOf(false) }
 
+    var showImportDialog by remember { mutableStateOf(false) }
+    var importSuggestions by remember { mutableStateOf<List<ImportedBlockSuggestion>>(emptyList()) }
+    var isScanningSystem by remember { mutableStateOf(false) }
+
     val simCountry = remember { CountryUtils.getSimCountryInfo(context) }
 
     var newTitle by remember { mutableStateOf("") }
@@ -38,6 +47,15 @@ fun RulesScreen() {
     var newDescription by remember { mutableStateOf("") }
     var newPattern by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(showImportDialog) {
+        if (showImportDialog) {
+            isScanningSystem = true
+            val results = SystemBlocklistImporter.scanSystemBlockedItems(context)
+            importSuggestions = results
+            isScanningSystem = false
+        }
+    }
 
     val loadRules = {
         scope.launch {
@@ -71,6 +89,11 @@ fun RulesScreen() {
                 Text("Motores de Llamadas y SMS Spam LATAM", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Row {
+                IconButton(
+                    onClick = { showImportDialog = true }
+                ) {
+                    Icon(imageVector = Icons.Default.DownloadForOffline, contentDescription = "Importar Bloqueados del Sistema", tint = MaterialTheme.colorScheme.primary)
+                }
                 IconButton(
                     onClick = {
                         scope.launch {
@@ -226,6 +249,36 @@ fun RulesScreen() {
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) {
                     Text("Cancelar")
+                }
+            }
+        )
+    }
+
+    if (showImportDialog) {
+        ImportSystemBlockedDialog(
+            suggestions = importSuggestions,
+            isLoading = isScanningSystem,
+            onDismiss = { showImportDialog = false },
+            onConfirmImport = { selected ->
+                scope.launch {
+                    val db = AppDatabase.getDatabase(context)
+                    var count = 0
+                    for (item in selected) {
+                        db.ruleDao().insertRule(
+                            RuleEntity(
+                                pattern = item.pattern,
+                                title = item.title,
+                                category = item.category,
+                                description = item.description
+                            )
+                        )
+                        count++
+                    }
+                    SpamRuleCache.invalidateCache()
+                    SpamRuleCache.prewarmCacheAsync(context)
+                    loadRules()
+                    showImportDialog = false
+                    Toast.makeText(context, "¡$count regla(s) importada(s) correctamente!", Toast.LENGTH_LONG).show()
                 }
             }
         )
