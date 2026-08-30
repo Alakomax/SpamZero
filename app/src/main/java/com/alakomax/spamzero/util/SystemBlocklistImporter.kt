@@ -23,33 +23,77 @@ data class ImportedBlockSuggestion(
 object SystemBlocklistImporter {
 
     suspend fun scanSystemBlockedItems(context: Context): List<ImportedBlockSuggestion> {
-        val suggestions = mutableListOf<ImportedBlockSuggestion>()
-        val countryInfo = CountryUtils.getSimCountryInfo(context)
-
-        val savedContactNumbers = getSavedContactNumbers(context)
         val rawBlockedNumbers = mutableSetOf<String>()
 
+        // 1. Intentar leer BlockedNumberContract con null projection para cubrir cualquier OEM
+        try {
+            val uri = BlockedNumberContract.BlockedNumbers.CONTENT_URI
+            context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                val colCount = cursor.columnCount
+                while (cursor.moveToNext()) {
+                    for (i in 0 until colCount) {
+                        val colName = cursor.getColumnName(i).lowercase()
+                        if (colName.contains("number") || colName.contains("phone") || colName.contains("original")) {
+                            val num = cursor.getString(i)
+                            if (!num.isNullOrBlank() && num.length >= 3) {
+                                rawBlockedNumbers.add(num.trim())
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w("SystemBlocklistImporter", "No se pudo leer BlockedNumberContract directo: ${e.message}")
+        }
+
+        // 2. URIs alternativas en fabricantes (MIUI / Samsung / Huawei / ColorOS)
+        val fallbackUris = listOf(
+            "content://com.android.blockednumber/blocked",
+            "content://block/blocked"
+        )
+        for (uriStr in fallbackUris) {
+            try {
+                val uri = Uri.parse(uriStr)
+                context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                    val colCount = cursor.columnCount
+                    while (cursor.moveToNext()) {
+                        for (i in 0 until colCount) {
+                            val colName = cursor.getColumnName(i).lowercase()
+                            if (colName.contains("number") || colName.contains("phone") || colName.contains("original")) {
+                                val num = cursor.getString(i)
+                                if (!num.isNullOrBlank() && num.length >= 3) {
+                                    rawBlockedNumbers.add(num.trim())
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Silencioso para fallbacks de proveedores no existentes
+            }
+        }
+
+        // 3. Leer llamadas rechazadas/bloqueadas del Registro de Llamadas (CallLog)
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
             try {
                 val projection = arrayOf(CallLog.Calls.NUMBER, CallLog.Calls.TYPE)
-                val selection = "${CallLog.Calls.TYPE} = ? OR ${CallLog.Calls.TYPE} = ?"
-                val selectionArgs = arrayOf(
-                    CallLog.Calls.BLOCKED_TYPE.toString(),
-                    CallLog.Calls.REJECTED_TYPE.toString()
-                )
                 context.contentResolver.query(
                     CallLog.Calls.CONTENT_URI,
                     projection,
-                    selection,
-                    selectionArgs,
+                    null,
+                    null,
                     "${CallLog.Calls.DATE} DESC"
                 )?.use { cursor ->
                     val numberIndex = cursor.getColumnIndex(CallLog.Calls.NUMBER)
+                    val typeIndex = cursor.getColumnIndex(CallLog.Calls.TYPE)
                     while (cursor.moveToNext()) {
                         if (numberIndex >= 0) {
                             val num = cursor.getString(numberIndex)
+                            val type = if (typeIndex >= 0) cursor.getInt(typeIndex) else -1
                             if (!num.isNullOrBlank()) {
-                                rawBlockedNumbers.add(num.trim())
+                                if (type == 5 || type == 6) { // REJECTED (5), BLOCKED (6)
+                                    rawBlockedNumbers.add(num.trim())
+                                }
                             }
                         }
                     }
@@ -59,30 +103,13 @@ object SystemBlocklistImporter {
             }
         }
 
-        try {
-            if (BlockedNumberContract.canCurrentUserBlockNumbers(context)) {
-                val projection = arrayOf(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER)
-                context.contentResolver.query(
-                    BlockedNumberContract.BlockedNumbers.CONTENT_URI,
-                    projection,
-                    null,
-                    null,
-                    null
-                )?.use { cursor ->
-                    val numIdx = cursor.getColumnIndex(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER)
-                    while (cursor.moveToNext()) {
-                        if (numIdx >= 0) {
-                            val num = cursor.getString(numIdx)
-                            if (!num.isNullOrBlank()) {
-                                rawBlockedNumbers.add(num.trim())
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("SystemBlocklistImporter", "Error leyendo BlockedNumberContract: ${e.message}")
-        }
+        return processNumbersToSuggestions(context, rawBlockedNumbers)
+    }
+
+    suspend fun processNumbersToSuggestions(context: Context, rawBlockedNumbers: Set<String>): List<ImportedBlockSuggestion> {
+        val suggestions = mutableListOf<ImportedBlockSuggestion>()
+        val countryInfo = CountryUtils.getSimCountryInfo(context)
+        val savedContactNumbers = getSavedContactNumbers(context)
 
         val filteredNumbers = rawBlockedNumbers.filterNot { rawNum ->
             val norm = PhoneUtils.normalizePhoneNumber(rawNum, countryInfo.code)
@@ -115,7 +142,7 @@ object SystemBlocklistImporter {
                 suggestions.add(
                     ImportedBlockSuggestion(
                         id = "prefix_$prefix",
-                        title = "Central telefónica sospechosa ($cleanPrefix...)",
+                        title = "Central telefónica ($cleanPrefix...)",
                         subtitle = "${list.size} números bloqueados que coinciden en los primeros dígitos",
                         pattern = regexPattern,
                         category = "📞 Llamadas Importadas",
@@ -136,11 +163,11 @@ object SystemBlocklistImporter {
             suggestions.add(
                 ImportedBlockSuggestion(
                     id = "individual_numbers",
-                    title = "Números bloqueados en tu teléfono ($count)",
-                    subtitle = "Lista de números marcados como no deseados en tu app de llamadas",
+                    title = "Números bloqueados ($count)",
+                    subtitle = "Lista de números marcados como no deseados en tu teléfono",
                     pattern = combinedPattern,
                     category = "📞 Llamadas Importadas",
-                    description = "Bloquea números individuales importados de tu lista negra del sistema",
+                    description = "Bloquea números individuales importados",
                     sampleCount = count
                 )
             )
